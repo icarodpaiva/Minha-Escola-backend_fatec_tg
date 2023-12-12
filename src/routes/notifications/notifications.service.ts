@@ -2,7 +2,7 @@ import axios from "axios"
 
 import { CreateNotificationDto } from "./dto/create-notification.dto"
 
-export const createNotificationService = async (
+export const createNotificationsService = async (
   notification: CreateNotificationDto
 ): Promise<string> => {
   const condition = notification.topics

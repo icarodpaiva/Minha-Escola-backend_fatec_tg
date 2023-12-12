@@ -2,6 +2,7 @@ import "reflect-metadata"
 
 import dotenv from "dotenv"
 import express from "express"
+import cors from "cors"
 
 import { mainRoutes } from "./routes"
 
@@ -9,6 +10,7 @@ dotenv.config()
 
 const server = express()
 
+server.use(cors())
 server.use(express.json())
 
 server.use("/", mainRoutes)

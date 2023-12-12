@@ -3,13 +3,13 @@ import { ValidationError, validate } from "class-validator"
 
 import { CreateNotificationDto } from "./dto/create-notification.dto"
 
-import { createNotificationService } from "./notifications.service"
+import { createNotificationsService } from "./notifications.service"
 
 export const notificationsController = Router()
 
-notificationsController.post("/", createNotificationRoute)
+notificationsController.post("/", create)
 
-async function createNotificationRoute(req: Request, res: Response) {
+async function create(req: Request, res: Response) {
   try {
     if (!req.body) {
       return res.status(400).send("Missing body")
@@ -33,7 +33,7 @@ async function createNotificationRoute(req: Request, res: Response) {
         )
     }
 
-    const data = await createNotificationService(notification)
+    const data = await createNotificationsService(notification)
 
     res.status(200).send(data)
   } catch (error) {
