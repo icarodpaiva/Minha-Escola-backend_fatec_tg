@@ -1,5 +1,3 @@
-import { IsNumberString } from "class-validator"
-
 import { supabase } from "../../databases/supabase"
 
 import type { Request, Response } from "express"
