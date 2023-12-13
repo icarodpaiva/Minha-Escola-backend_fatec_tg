@@ -1,8 +1,6 @@
 import { Router } from "express"
-import { notificationsController } from "./notifications/notifications.controller"
-import { usersController } from "./users"
+import { getUser } from "./users/getUser"
 
 export const mainRoutes = Router()
 
-mainRoutes.use("/notifications", notificationsController)
-mainRoutes.use("/users", usersController)
+mainRoutes.get("/users/:id", getUser)

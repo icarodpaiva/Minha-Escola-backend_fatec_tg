@@ -13,7 +13,7 @@ const server = express()
 server.use(cors())
 server.use(express.json())
 
-server.use("/", mainRoutes)
+server.use(mainRoutes)
 
 server.use((_, res) => {
   res.status(404).send("Not found")
