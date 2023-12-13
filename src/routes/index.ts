@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { notificationsController } from "./notifications/notifications.controller"
+import { notificationsController } from "./notifications"
 import { usersController } from "./users"
 
 export const mainRoutes = Router()
