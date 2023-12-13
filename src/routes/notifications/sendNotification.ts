@@ -36,7 +36,8 @@ export async function sendNotification(req: Request, res: Response) {
     const errors = await validateClass(notification)
 
     if (errors) {
-      return res.status(400).send(errors)
+      res.status(400).send(errors)
+      return
     }
 
     const condition = notification.topics
