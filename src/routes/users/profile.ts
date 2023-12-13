@@ -1,14 +1,6 @@
-import { IsNumberString } from "class-validator"
-
 import { supabase } from "../../databases/supabase"
-import { validateClass } from "../../utils/validateClass"
 
 import type { Request, Response } from "express"
-
-class GetUserParamsDto {
-  @IsNumberString()
-  id!: string
-}
 
 interface User {
   id: number
@@ -19,16 +11,13 @@ interface User {
   access_level_id: number
 }
 
-export async function getUser(req: Request, res: Response) {
+export async function profile(_: Request, res: Response) {
   try {
-    const params = new GetUserParamsDto()
+    const auth_user_id: string | undefined = res.locals.auth_user_id
 
-    params.id = req.params.id
-
-    const errors = await validateClass(params)
-
-    if (errors) {
-      return res.status(400).send(errors)
+    if (!auth_user_id) {
+      res.status(403).send("Forbidden")
+      return
     }
 
     const {
@@ -36,8 +25,8 @@ export async function getUser(req: Request, res: Response) {
       error: userError
     }: { data: User[] | null; error: any } = await supabase
       .from("users")
-      .select("*")
-      .eq("id", params.id)
+      .select("id, name, email, ar, document, access_level_id")
+      .eq("auth_user_id", auth_user_id)
       .limit(1)
 
     if (userError) {
