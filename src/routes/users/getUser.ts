@@ -11,7 +11,7 @@ class GetUserParams {
 }
 
 interface User {
-  id: string
+  id: number
   name: string
   email: string
   ar: string
