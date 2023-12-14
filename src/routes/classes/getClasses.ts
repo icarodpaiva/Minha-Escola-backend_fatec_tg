@@ -1,8 +1,28 @@
 import { supabase } from "../../databases/supabase"
+import { IsIn, IsNotEmpty, IsString } from "class-validator"
 
 import { TEACHER } from "../../constants/access_levels"
+import {
+  SUNDAY,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY
+} from "../../constants/weekdays"
+import { validateClass } from "../../utils/validateClass"
 
 import type { Request, Response } from "express"
+
+class GetClassesDto {
+  @IsIn(
+    [SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY].map(String)
+  )
+  @IsString()
+  @IsNotEmpty()
+  date!: string
+}
 
 interface Groups {
   groups: {
@@ -39,13 +59,23 @@ interface ClassWithAdditionalInfos extends Class {
   teacher: string
 }
 
-export async function getClasses(_: Request, res: Response) {
+export async function getClasses(req: Request, res: Response) {
   try {
     const auth_user_id: string | undefined = res.locals.auth_user_id
 
     if (!auth_user_id) {
       res.status(403).send("Forbidden")
       return
+    }
+
+    const filters = new GetClassesDto()
+
+    filters.date = req.query.date as string
+
+    const errors = await validateClass(filters)
+
+    if (errors) {
+      return res.status(400).send(errors)
     }
 
     const { data: groups, error: groupsError } = (await supabase
@@ -70,7 +100,7 @@ export async function getClasses(_: Request, res: Response) {
         `
       )
       .eq("users.auth_user_id", auth_user_id)
-      .eq("groups.classes.weekday_id", 3) // TODO - receive the current weekday by param
+      .eq("groups.classes.weekday_id", parseInt(filters.date, 10))
       .not("users", "is", null)
       .not("groups", "is", null)
       .not("groups.classes", "is", null)) as {
