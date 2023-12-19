@@ -63,7 +63,8 @@ export async function getNotifications(_: Request, res: Response) {
       )
       .in("groups.id", groupsIds)
       .not("groups", "is", null)
-      .not("notifications", "is", null)) as {
+      .not("notifications", "is", null)
+      .order("created_at", { ascending: false })) as {
       data: Notifications[] | null
       error: any
     }
