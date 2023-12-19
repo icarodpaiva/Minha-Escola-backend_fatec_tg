@@ -7,6 +7,7 @@ import { adminUser } from "../middlewares/adminUser"
 import { login } from "./auth/login"
 
 import { sendNotification } from "./notifications/sendNotification"
+import { getNotifications } from "./notifications/getNotifications"
 
 import { profile } from "./users/profile"
 import { getUser } from "./users/getUser"
@@ -25,6 +26,7 @@ mainRoutes.post(
   notificationTopics,
   sendNotification
 )
+mainRoutes.get("/notifications", authenticated, getNotifications)
 
 // Users routes
 mainRoutes.get("/users/profile", authenticated, profile)

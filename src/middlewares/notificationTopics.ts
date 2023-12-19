@@ -30,14 +30,16 @@ export class SendNotificationDto {
   message!: string
 }
 
-interface Groups {
-  groups: {
-    id: number
-  }
-}
-
 interface User {
   access_level_id: number
+}
+
+interface AdminGroups {
+  id: number
+}
+
+interface TeacherGroups {
+  group_id: number
 }
 
 export async function notificationTopics(
@@ -46,12 +48,7 @@ export async function notificationTopics(
   next: NextFunction
 ) {
   try {
-    const auth_user_id: string | undefined = res.locals.auth_user_id
-
-    if (!auth_user_id) {
-      res.status(403).send("Forbidden")
-      return
-    }
+    const auth_user_id: string = res.locals.auth_user_id
 
     const {
       data: user,
@@ -93,7 +90,7 @@ export async function notificationTopics(
       const {
         data: groups,
         error: groupsError
-      }: { data: Groups["groups"][] | null; error: any } = await supabase
+      }: { data: AdminGroups[] | null; error: any } = await supabase
         .from("groups")
         .select("id")
         .in("id", notification.topics)
@@ -120,11 +117,11 @@ export async function notificationTopics(
     else {
       const { data: groups, error: groupsError } = (await supabase
         .from("users_groups")
-        .select("groups(id), users()")
+        .select("group_id, users()")
         .eq("users.auth_user_id", auth_user_id)
         .not("users", "is", null)
         .not("groups", "is", null)) as {
-        data: Groups[] | null
+        data: TeacherGroups[] | null
         error: any
       }
 
@@ -133,7 +130,7 @@ export async function notificationTopics(
         return
       }
 
-      const teacherTopics = groups.map(({ groups: { id } }) => id)
+      const teacherTopics = groups.map(({ group_id }) => group_id)
 
       const isAllowed = notification.topics.every(topic =>
         teacherTopics.includes(topic)

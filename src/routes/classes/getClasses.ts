@@ -61,12 +61,7 @@ interface ClassWithAdditionalInfos extends Class {
 
 export async function getClasses(req: Request, res: Response) {
   try {
-    const auth_user_id: string | undefined = res.locals.auth_user_id
-
-    if (!auth_user_id) {
-      res.status(403).send("Forbidden")
-      return
-    }
+    const auth_user_id: string = res.locals.auth_user_id
 
     const filters = new GetClassesDto()
 
