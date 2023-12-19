@@ -1,6 +1,7 @@
 import { Router } from "express"
 
 import { authenticated } from "../middlewares/authenticated"
+import { notificationTopics } from "../middlewares/notificationTopics"
 import { adminUser } from "../middlewares/adminUser"
 
 import { login } from "./auth/login"
@@ -18,7 +19,12 @@ export const mainRoutes = Router()
 mainRoutes.post("/auth/login", login)
 
 // Notifications routes
-mainRoutes.post("/notifications", sendNotification)
+mainRoutes.post(
+  "/notifications",
+  authenticated,
+  notificationTopics,
+  sendNotification
+)
 
 // Users routes
 mainRoutes.get("/users/profile", authenticated, profile)
