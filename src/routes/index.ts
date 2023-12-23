@@ -14,6 +14,9 @@ import { getUser } from "./users/getUser"
 
 import { getClasses } from "./classes/getClasses"
 
+import * as AccessLevelController from "./admin/controllers/AccessLevelController"
+import * as CoursesController from './admin/controllers/CoursesController'
+
 export const mainRoutes = Router()
 
 // Auth routes
@@ -34,3 +37,22 @@ mainRoutes.get("/users/:id", authenticated, adminUser, getUser)
 
 // Classes routes
 mainRoutes.get("/classes", authenticated, getClasses)
+
+// Admin routes:
+// ACCESS LEVEL
+mainRoutes.route('/admin/access-levels')
+  .get(AccessLevelController.findAll)
+  .post(AccessLevelController.createAccess)
+mainRoutes.route('/admin/access-level/:id')
+  .get(AccessLevelController.findById)
+  .put(AccessLevelController.updateAccess)
+  .delete(AccessLevelController.deleteAccess)
+
+// COURSES
+mainRoutes.route('/admin/courses')
+  .get(CoursesController.findAll)
+  .post(CoursesController.createCourses)
+mainRoutes.route('/admin/course/:id')
+  .get(CoursesController.findById)
+  .put(CoursesController.updateCourses)
+  .delete(CoursesController.deleteCourses)
