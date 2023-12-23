@@ -1,4 +1,3 @@
-import { deserialize } from "v8";
 import CoursesRepository from "../repositories/CoursesRepository";
 
 import type { Request, Response } from 'express'

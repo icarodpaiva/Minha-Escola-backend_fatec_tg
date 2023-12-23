@@ -1,5 +1,5 @@
 import { supabase } from "../../../databases/supabase";
-import { courses } from '../interfaces/InterfacesBD';
+import { courses } from "../interfaces/interfacesBD";
 
 class CoursesRepository {
   async findAll() {

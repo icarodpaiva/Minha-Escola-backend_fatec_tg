@@ -1,5 +1,5 @@
 import { supabase } from "../../../databases/supabase";
-import { accessLevel } from '../interfaces/InterfacesBD'
+import { accessLevel } from "../interfaces/interfacesBD";
 
 class AccessLevelRepository {
   async findAll() {
