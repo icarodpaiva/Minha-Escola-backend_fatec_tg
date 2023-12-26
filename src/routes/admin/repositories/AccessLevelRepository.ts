@@ -3,22 +3,16 @@ import { accessLevel } from "../interfaces/interfacesBD";
 
 class AccessLevelRepository {
   async findAll() {
-    const {
-      data: accessLevels,
-      error: accessLevelsError
-    }: {
+    const { data, error }: {
       data: accessLevel[] | null;
       error: any
     } = await supabase.from('access_levels').select('*')
   
-    return accessLevelsError ? accessLevelsError : accessLevels
+    return error ? error : data
   }
   
   async findById(id: string) {
-    const {
-      data: accessLevels,
-      error: accessLevelsError
-    }: {
+    const { data, error }: {
       data: accessLevel[] | null;
       error: any
     } = await supabase
@@ -26,14 +20,11 @@ class AccessLevelRepository {
       .select('*')
       .eq('id', id)
     
-    return accessLevelsError ? accessLevelsError : accessLevels
+    return error ? error : data
   }
 
   async findByType(type: string) {
-    const {
-      data: accessLevels,
-      error: accessLevelsError
-    }: {
+    const { data, error }: {
       data: accessLevel[] | null;
       error: any
     } = await supabase
@@ -41,14 +32,11 @@ class AccessLevelRepository {
       .select('*')
       .eq('type', type)
     
-    return accessLevelsError ? accessLevelsError : accessLevels
+    return error ? error : data
   }
   
   async createAccess(type: string) {
-    const {
-      data: accessLevels,
-      error: accessLevelsError
-    }: {
+    const { data, error }: {
       data: accessLevel[] | null;
       error: any
     } = await supabase
@@ -56,14 +44,11 @@ class AccessLevelRepository {
       .insert([{ type }])
       .select()
     
-    return accessLevelsError ? accessLevelsError : accessLevels
+    return error ? error : data
   }
 
   async updateAccess(id: string, type: string) {
-    const {
-      data: accessLevels,
-      error: accessLevelsError
-    }: {
+    const { data, error }: {
       data: accessLevel[] | null;
       error: any
     } = await supabase
@@ -71,14 +56,11 @@ class AccessLevelRepository {
       .update({ type })
       .eq('id', id)
     
-    return accessLevelsError ? accessLevelsError : accessLevels
+    return error ? error : data
   }
 
   async deleteAccess(id: string) {
-    const {
-      data: accessLevels,
-      error: accessLevelsError
-    }: {
+    const { data, error }: {
       data: accessLevel[] | null;
       error: any
     } = await supabase
@@ -86,7 +68,7 @@ class AccessLevelRepository {
       .delete()
       .eq('id', id)
     
-    return accessLevelsError ? accessLevelsError : accessLevels
+    return error ? error : data
   }
 }
 

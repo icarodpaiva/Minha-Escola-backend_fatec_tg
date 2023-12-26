@@ -1,18 +1,18 @@
-import CoursesRepository from "../repositories/CoursesRepository";
+import SubjectRepository from '../repositories/SubjectRepository'
 
 import type { Request, Response } from 'express'
 
-class CoursesController {
+class SubjectController {
   async findAll(_: Request, response: Response) {
     try {
-      const Courses = await CoursesRepository.findAll()
+      const Subjects = await SubjectRepository.findAll()
   
-      if (!Courses) {
-        response.status(400).send('Courses not found')
+      if (!Subjects) {
+        response.status(400).send('Subjects not found')
         return
       }
   
-      response.status(200).send(Courses)
+      response.status(200).send(Subjects)
     } catch (error) {
       console.log(error)
       response.status(500).send('Internal server error')
@@ -28,21 +28,21 @@ class CoursesController {
         return
       }
   
-      const CourseExists = await CoursesRepository.findById(id)
+      const SubjectExists = await SubjectRepository.findById(id)
   
-      if (!CourseExists) {
+      if (!SubjectExists) {
         response.status(400).send('Course not found')
         return
       }
   
-      response.status(200).send(CourseExists)
+      response.status(200).send(SubjectExists)
     } catch (error) {
       console.log(error)
       response.status(500).send('Internal server error')
     }
   }
   
-  async createCourses(request: Request, response: Response) {
+  async createSubject(request: Request, response: Response) {
     try {
       const { name, description } = request.body
   
@@ -51,22 +51,22 @@ class CoursesController {
         return
       }
   
-      const CoursesExists = await CoursesRepository.findByName(name)
+      const SubjectsExists = await SubjectRepository.findByName(name)
   
-      if (CoursesExists) {
-        response.status(404).send(`The course ${name} exists`)
+      if (SubjectsExists) {
+        response.status(404).send(`The subject ${name} exists`)
         return
       }
   
-      await CoursesRepository.create(name, description)
-      response.status(201).send('Successfully created courses')
+      await SubjectRepository.create(name, description)
+      response.status(201).send('Successfully created subject')
     } catch (error) {
       console.log(error)
       response.status(500).send('Internal server error')
     }
   }
   
-  async updateCourses(request: Request, response: Response) {
+  async updateSubjects(request: Request, response: Response) {
     try {
       const { id } = request.params
   
@@ -82,22 +82,22 @@ class CoursesController {
         return
       }
   
-      const CourseExists = await CoursesRepository.findById(id)
+      const SubjectsExists = await SubjectRepository.findById(id)
   
-      if (!CourseExists) {
-        response.status(400).send('Course not found')
+      if (!SubjectsExists) {
+        response.status(400).send('Subject not found')
         return
       }
   
-      await CoursesRepository.update(id, name, description)
-      response.status(200).send('Successfully updated courses')
+      await SubjectRepository.update(id, name, description)
+      response.status(200).send('Successfully updated subject')
     } catch (error) {
       console.log(error)
       response.status(500).send('Internal server error')
     }
   }
   
-  async deleteCourses(request: Request, response: Response) {
+  async deleteSubject(request: Request, response: Response) {
     try {
       const { id } = request.params
   
@@ -106,15 +106,15 @@ class CoursesController {
         return
       }
   
-      const CourseExists = await CoursesRepository.findById(id)
+      const SubjectsExists = await SubjectRepository.findById(id)
   
-      if (!CourseExists) {
-        response.status(400).send('Course not found')
+      if (!SubjectsExists) {
+        response.status(400).send('Subject not found')
         return
       }
   
-      await CoursesRepository.delete(id)
-      response.status(200).send('Successfully deleted courses')
+      await SubjectRepository.delete(id)
+      response.status(200).send('Successfully deleted subjects')
     } catch (error) {
       console.log(error)
       response.status(500).send('Internal server error')
@@ -122,4 +122,4 @@ class CoursesController {
   }
 }
 
-export default new CoursesController()
+export default new SubjectController()

@@ -1,12 +1,12 @@
 import { supabase } from "../../../databases/supabase";
 import { courses_and_subjects } from "../interfaces/interfacesBD";
 
-class CoursesRepository {
+class SubjectRepository {
   async findAll() {
     const { data, error }: {
       data: courses_and_subjects[] | null,
       error: any
-    } = await supabase.from('courses').select('*')
+    } = await supabase.from('subjects').select('*')
 
     return error ? error : data
   }
@@ -15,7 +15,7 @@ class CoursesRepository {
     const { data, error }: {
       data: courses_and_subjects[] | null,
       error: any
-    } = await supabase.from('courses').select('*')
+    } = await supabase.from('subjects').select('*')
       .eq('id', id)
     
     return error ? error : data
@@ -25,7 +25,7 @@ class CoursesRepository {
     const { data, error }: {
       data: courses_and_subjects[] | null,
       error: any
-    } = await supabase.from('courses').select('*')
+    } = await supabase.from('subjects').select('*')
       .eq('name', name)
     
     return error ? error : data
@@ -35,7 +35,7 @@ class CoursesRepository {
     const { data, error }: {
       data: courses_and_subjects[] | null,
       error: any
-    } = await supabase.from('courses')
+    } = await supabase.from('subjects')
       .insert([
         {
           name,
@@ -50,7 +50,7 @@ class CoursesRepository {
     const { data, error }: {
       data: courses_and_subjects[] | null,
       error: any
-    } = await supabase.from('courses')
+    } = await supabase.from('subjects')
       .update({
         name, description
       }).eq('id', id)
@@ -62,11 +62,11 @@ class CoursesRepository {
     const { data, error }: {
       data: courses_and_subjects[] | null,
       error: any
-    } = await supabase.from('courses').delete()
+    } = await supabase.from('subjects').delete()
       .eq('id', id)
     
     return error ? error : data
   }
 }
 
-export default new CoursesRepository()
+export default new SubjectRepository()
