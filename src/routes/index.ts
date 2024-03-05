@@ -7,6 +7,7 @@ import { adminUser } from "../middlewares/adminUser"
 import { login } from "./auth/login"
 
 import { profile } from "./students/profile"
+import { classes } from "./students/classes"
 
 import { sendNotification } from "./notifications/sendNotification"
 import { getNotifications } from "./notifications/getNotifications"
@@ -27,6 +28,7 @@ mainRoutes.post("/auth/login", login)
 
 // Students
 mainRoutes.get('/students/profile', authenticated, profile)
+mainRoutes.get('/students/classes', authenticated, classes)
 
 // TO-DO - Refactoring
 // Notifications routes
