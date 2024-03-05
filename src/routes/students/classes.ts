@@ -14,7 +14,7 @@ import { validateClass } from "../../utils/validateClass"
 
 import type { Request, Response } from "express"
 
-class GetClassesDto {
+class ClassesDto {
   @IsIn(
     [SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY].map(String)
   )
@@ -29,12 +29,14 @@ interface Groups {
     subjects: {
       name: string
     }
+    staff: {
+      name: string | null
+    }
     classes: Class[]
   }
 }
 
 interface Class {
-  id: number
   start_time: string
   end_time: string
   locations: Locations
@@ -46,29 +48,17 @@ interface Locations {
   classroom: string
 }
 
-interface Teachers {
-  group_id: number
-  users: {
-    name: string
-  }
-}
-
-interface ClassWithAdditionalInfos extends Class {
-  subject: string
-  teacher: string
-}
-
 export async function classes(req: Request, res: Response) {
   try {
     const auth_user_id: string = res.locals.auth_user_id
-    const is_staff: boolean =  res.locals.is_staff
+    const is_staff: boolean = res.locals.is_staff
 
     if (is_staff) {
       res.status(400).send("Use staff routes")
       return
     }
 
-    const filters = new GetClassesDto()
+    const filters = new ClassesDto()
 
     filters.date = req.query.date as string
 
@@ -83,10 +73,9 @@ export async function classes(req: Request, res: Response) {
       .select(
         `groups(
           id,
-          staff(name),
           subjects(name),
+          staff(name),
           classes(
-            id,
             start_time,
             end_time,
             locations(building, floor, classroom)
@@ -95,7 +84,7 @@ export async function classes(req: Request, res: Response) {
         students()`
       )
       .eq("students.auth_user_id", auth_user_id)
-      .eq("groups.classes.weekday_id", parseInt(filters.date, 10))     
+      .eq("groups.classes.weekday_id", parseInt(filters.date, 10))
       .not("groups", "is", null)
       .not("groups.classes", "is", null)) as {
       data: Groups[] | null
@@ -113,48 +102,31 @@ export async function classes(req: Request, res: Response) {
       return
     }
 
-    res.status(200).send(groups)
+    const formattedClasses = groups.map(({ groups: studentGroups }) => {
+      const {
+        id,
+        staff,
+        subjects,
+        classes: [{ locations, start_time, end_time }]
+      } = studentGroups
 
-    // const groupsIds = groups.map(({ groups: { id } }) => id)
+      const { building, floor, classroom } = locations
 
-    // const { data: teachers, error: teachersError } = (await supabase
-    //   .from("staff_groups")
-    //   .select("group_id, users(name)")
-    //   .in("group_id", groupsIds)
-    //   .eq("users.access_level_id", TEACHER)
-    //   .not("users", "is", null)) as {
-    //   data: Teachers[] | null
-    //   error: any
-    // }
+      return {
+        id,
+        subject: subjects.name,
+        teacher: staff.name,
+        location: {
+          building,
+          floor,
+          classroom
+        },
+        start_time,
+        end_time
+      }
+    })
 
-    // if (teachersError) {
-    //   res.status(500).send("Internal server error")
-    //   return
-    // }
-
-    // if (!teachers || teachers.length === 0) {
-    //   res.status(404).send("Not found")
-    //   return
-    // }
-
-    // const formattedClasses = groups.reduce(
-    //   (acc, { groups: { id, classes, subjects } }) => {
-    //     const teacher = teachers.find(
-    //       ({ group_id }) => group_id === id
-    //     ) as Teachers
-
-    //     const classesWithAdditionalInfo = classes.map(classItem => ({
-    //       ...classItem,
-    //       subject: subjects.name,
-    //       teacher: teacher.users.name
-    //     }))
-
-    //     return [...acc, ...classesWithAdditionalInfo]
-    //   },
-    //   [] as ClassWithAdditionalInfos[]
-    // )
-
-    // res.status(200).send(formattedClasses)
+    res.status(200).send(formattedClasses)
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")
