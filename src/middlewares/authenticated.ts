@@ -23,6 +23,7 @@ export async function authenticated(
     }
 
     res.locals.auth_user_id = authenticatedUser.user.id
+    res.locals.is_staff = authenticatedUser.user.user_metadata.is_staff
 
     next()
   } catch (error) {

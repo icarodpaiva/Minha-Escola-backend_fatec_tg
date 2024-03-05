@@ -6,10 +6,12 @@ import { adminUser } from "../middlewares/adminUser"
 
 import { login } from "./auth/login"
 
+import { profile } from "./students/profile"
+
 import { sendNotification } from "./notifications/sendNotification"
 import { getNotifications } from "./notifications/getNotifications"
 
-import { profile } from "./users/profile"
+import { profile as userProfile} from "./users/profile"
 import { getUser } from "./users/getUser"
 
 import { getClasses } from "./classes/getClasses"
@@ -23,6 +25,10 @@ export const mainRoutes = Router()
 // Auth routes
 mainRoutes.post("/auth/login", login)
 
+// Students
+mainRoutes.get('/students/profile', authenticated, profile)
+
+// TO-DO - Refactoring
 // Notifications routes
 mainRoutes.post(
   "/notifications",
@@ -32,13 +38,15 @@ mainRoutes.post(
 )
 mainRoutes.get("/notifications", authenticated, getNotifications)
 
+// Legacy - // TO-DO - Delete all
 // Users routes
-mainRoutes.get("/users/profile", authenticated, profile)
+mainRoutes.get("/users/profile", authenticated, userProfile)
 mainRoutes.get("/users/:id", authenticated, adminUser, getUser)
 
 // Classes routes
 mainRoutes.get("/classes", authenticated, getClasses)
 
+// Legacy - // TO-DO - Delete all
 // Admin routes:
 // ACCESS LEVEL
 mainRoutes.route('/admin/access-levels')
@@ -49,6 +57,7 @@ mainRoutes.route('/admin/access-level/:id')
   .put(AccessLevelController.updateAccess)
   .delete(AccessLevelController.deleteAccess)
 
+// TO-DO - CRUD
 // COURSES
 mainRoutes.route('/admin/courses')
   .get(CoursesController.findAll)
@@ -58,6 +67,7 @@ mainRoutes.route('/admin/course/:id')
   .put(CoursesController.updateCourses)
   .delete(CoursesController.deleteCourses)
 
+// TO-DO - CRUD
 // SUBJECTS
 mainRoutes.route('/admin/subjects')
   .get(SubjectController.findAll)
