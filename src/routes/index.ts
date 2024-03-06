@@ -8,6 +8,7 @@ import { login } from "./auth/login"
 
 import { profile } from "./students/profile"
 import { classes } from "./students/classes"
+import { notifications } from "./students/notifications"
 
 import { sendNotification } from "./notifications/sendNotification"
 import { getNotifications } from "./notifications/getNotifications"
@@ -29,6 +30,7 @@ mainRoutes.post("/auth/login", login)
 // Students
 mainRoutes.get('/students/profile', authenticated, profile)
 mainRoutes.get('/students/classes', authenticated, classes)
+mainRoutes.get('/students/notifications', authenticated, notifications)
 
 // TO-DO - Refactoring
 // Notifications routes
