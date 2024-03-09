@@ -7,10 +7,6 @@ import {
 } from "class-validator"
 
 import { supabase } from "../databases/supabase"
-import {
-  ALLOWED_TO_SEND_NOTIFICATIONS,
-  ADMIN
-} from "../constants/access_levels"
 import { validateClass } from "../utils/validateClass"
 
 import type { NextFunction, Request, Response } from "express"
@@ -59,12 +55,7 @@ export async function notificationTopics(
       .eq("auth_user_id", auth_user_id)
       .limit(1)
 
-    if (
-      userError ||
-      !user ||
-      user.length === 0 ||
-      !ALLOWED_TO_SEND_NOTIFICATIONS.includes(user[0].access_level_id)
-    ) {
+    if (userError || !user || user.length === 0) {
       res.status(403).send("Forbidden")
       return
     }
@@ -86,7 +77,7 @@ export async function notificationTopics(
       return
     }
 
-    if (user[0].access_level_id === ADMIN) {
+    if (user[0].access_level_id === 1) {
       const {
         data: groups,
         error: groupsError

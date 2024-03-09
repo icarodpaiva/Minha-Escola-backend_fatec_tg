@@ -7,4 +7,4 @@ import { courses } from "./courses"
 
 export const admin = Router()
 
-admin.use("/", isAuthenticated, isAdmin, courses)
+admin.use("/courses", isAuthenticated, isAdmin, courses)

@@ -6,7 +6,7 @@ import { students } from "./students"
 
 export const mainRoutes = Router()
 
-mainRoutes.post("/auth", auth)
+mainRoutes.use("/auth", auth)
 mainRoutes.use("/admin", admin)
 mainRoutes.use("/students", students)
 

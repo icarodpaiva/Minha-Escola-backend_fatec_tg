@@ -4,7 +4,7 @@ import type { ValidationError } from "class-validator"
 
 export const validateClass = async (
   classToValidate: any
-): Promise<string | void> => {
+): Promise<string | null> => {
   if (!classToValidate) {
     throw new Error("class to validate is required")
   }
@@ -16,4 +16,6 @@ export const validateClass = async (
       .map(error => Object.values(error.constraints ?? {}).join(", "))
       .join(", ")
   }
+
+  return null
 }
