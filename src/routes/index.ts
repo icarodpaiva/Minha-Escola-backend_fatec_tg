@@ -11,7 +11,7 @@ mainRoutes.use("/admin", admin)
 mainRoutes.use("/students", students)
 
 // TO-DO - Refactoring
-import { authenticated } from "../middlewares/authenticated"
+import { isAuthenticated } from "../middlewares/isAuthenticated"
 import { notificationTopics } from "../middlewares/notificationTopics"
 import { sendNotification } from "./notifications/sendNotification"
 import { getNotifications } from "./notifications/getNotifications"
@@ -19,8 +19,8 @@ import { getNotifications } from "./notifications/getNotifications"
 // Notifications routes
 mainRoutes.post(
   "/notifications",
-  authenticated,
+  isAuthenticated,
   notificationTopics,
   sendNotification
 )
-mainRoutes.get("/notifications", authenticated, getNotifications)
+mainRoutes.get("/notifications", isAuthenticated, getNotifications)

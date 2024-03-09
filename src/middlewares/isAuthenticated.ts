@@ -1,8 +1,8 @@
 import { supabase } from "../databases/supabase"
 
-import type { NextFunction, Request, Response } from "express"
+import type { Request, Response, NextFunction } from "express"
 
-export async function authenticated(
+export async function isAuthenticated(
   req: Request,
   res: Response,
   next: NextFunction
