@@ -9,3 +9,9 @@ export class CreateAndUpdateCourseDto {
   @IsNotEmpty()
   description!: string
 }
+
+export interface Course {
+  id: string
+  name: string
+  description: string
+}

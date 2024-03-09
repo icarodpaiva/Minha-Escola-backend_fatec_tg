@@ -32,7 +32,6 @@ export async function create(req: Request, res: Response) {
     }
 
     res.status(201).end()
-    return
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

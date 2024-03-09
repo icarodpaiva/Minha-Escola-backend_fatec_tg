@@ -4,10 +4,12 @@ import { supabase } from "../../../databases/supabase"
 
 import type { Course } from "./dto"
 
-export async function findAll(_: Request, res: Response) {
+export async function findById(req: Request, res: Response) {
   try {
+    const { id } = req.params
+
     const { data, error }: { data: Course[] | null; error: any } =
-      await supabase.from("courses").select("*")
+      await supabase.from("courses").select("*").eq("id", id).limit(1)
 
     if (error) {
       console.log(error)
@@ -15,7 +17,12 @@ export async function findAll(_: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data)
+    if (!data || !data.length) {
+      res.status(404).send("Not found")
+      return
+    }
+
+    res.status(200).send(data[0])
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")
