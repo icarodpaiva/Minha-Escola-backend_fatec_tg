@@ -1,25 +1,11 @@
 import { supabase } from "../../databases/supabase"
-import { IsIn, IsNotEmpty, IsString } from "class-validator"
-
-import {
-  SUNDAY,
-  MONDAY,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY
-} from "../../constants/weekdays"
+import { IsDateString } from "class-validator"
 import { validateClass } from "../../utils/validateClass"
 
 import type { Request, Response } from "express"
 
 class ClassesDto {
-  @IsIn(
-    [SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY].map(String)
-  )
-  @IsString()
-  @IsNotEmpty()
+  @IsDateString()
   date!: string
 }
 
@@ -37,6 +23,7 @@ interface Groups {
 }
 
 interface Class {
+  date: string
   start_time: string
   end_time: string
   locations: Locations
@@ -76,6 +63,7 @@ export async function classes(req: Request, res: Response) {
           subjects(name),
           staff(name),
           classes(
+            date,
             start_time,
             end_time,
             locations(building, floor, classroom)
@@ -84,7 +72,7 @@ export async function classes(req: Request, res: Response) {
         students()`
       )
       .eq("students.auth_user_id", auth_user_id)
-      .eq("groups.classes.weekday_id", parseInt(filters.date, 10))
+      .eq("groups.classes.date", filters.date)
       .not("groups", "is", null)
       .not("groups.classes", "is", null)) as {
       data: Groups[] | null
@@ -107,7 +95,7 @@ export async function classes(req: Request, res: Response) {
         id,
         staff,
         subjects,
-        classes: [{ locations, start_time, end_time }]
+        classes: [{ date, start_time, end_time, locations }]
       } = studentGroups
 
       const { building, floor, classroom } = locations
@@ -116,13 +104,14 @@ export async function classes(req: Request, res: Response) {
         id,
         subject: subjects.name,
         teacher: staff.name,
+        date,
+        start_time: start_time.slice(0, 5),
+        end_time: end_time.slice(0, 5),
         location: {
           building,
           floor,
           classroom
-        },
-        start_time,
-        end_time
+        }
       }
     })
 
