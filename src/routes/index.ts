@@ -1,38 +1,19 @@
 import { Router } from "express"
 
-import { authenticated } from "../middlewares/authenticated"
-import { notificationTopics } from "../middlewares/notificationTopics"
-import { adminUser } from "../middlewares/adminUser"
-
-import { login } from "./auth/login"
-
-import { profile } from "./students/profile"
-import { classes } from "./students/classes"
-import { notifications } from "./students/notifications"
-
-import { sendNotification } from "./notifications/sendNotification"
-import { getNotifications } from "./notifications/getNotifications"
-
-import { profile as userProfile} from "./users/profile"
-import { getUser } from "./users/getUser"
-
-import { getClasses } from "./classes/getClasses"
-
-import AccessLevelController from "./admin/controllers/AccessLevelController"
-import CoursesController from "./admin/controllers/CoursesController"
-import SubjectController from "./admin/controllers/SubjectController"
+import { auth } from "./auth"
+import { students } from "./students"
 
 export const mainRoutes = Router()
 
-// Auth routes
-mainRoutes.post("/auth/login", login)
-
-// Students
-mainRoutes.get('/students/profile', authenticated, profile)
-mainRoutes.get('/students/classes', authenticated, classes)
-mainRoutes.get('/students/notifications', authenticated, notifications)
+mainRoutes.post("/auth", auth)
+mainRoutes.use("/students", students)
 
 // TO-DO - Refactoring
+import { authenticated } from "../middlewares/authenticated"
+import { notificationTopics } from "../middlewares/notificationTopics"
+import { sendNotification } from "./notifications/sendNotification"
+import { getNotifications } from "./notifications/getNotifications"
+
 // Notifications routes
 mainRoutes.post(
   "/notifications",
@@ -42,41 +23,30 @@ mainRoutes.post(
 )
 mainRoutes.get("/notifications", authenticated, getNotifications)
 
-// Legacy - // TO-DO - Delete all
-// Users routes
-mainRoutes.get("/users/profile", authenticated, userProfile)
-mainRoutes.get("/users/:id", authenticated, adminUser, getUser)
+// TO-DO - Legacy - Delete all below
+import CoursesController from "./admin/controllers/CoursesController"
+import SubjectController from "./admin/controllers/SubjectController"
 
-// Classes routes
-mainRoutes.get("/classes", authenticated, getClasses)
-
-// Legacy - // TO-DO - Delete all
 // Admin routes:
-// ACCESS LEVEL
-mainRoutes.route('/admin/access-levels')
-  .get(AccessLevelController.findAll)
-  .post(AccessLevelController.createAccess)
-mainRoutes.route('/admin/access-level/:id')
-  .get(AccessLevelController.findById)
-  .put(AccessLevelController.updateAccess)
-  .delete(AccessLevelController.deleteAccess)
 
-// TO-DO - CRUD
 // COURSES
-mainRoutes.route('/admin/courses')
+mainRoutes
+  .route("/admin/courses")
   .get(CoursesController.findAll)
   .post(CoursesController.createCourses)
-mainRoutes.route('/admin/course/:id')
+mainRoutes
+  .route("/admin/course/:id")
   .get(CoursesController.findById)
   .put(CoursesController.updateCourses)
   .delete(CoursesController.deleteCourses)
 
-// TO-DO - CRUD
 // SUBJECTS
-mainRoutes.route('/admin/subjects')
+mainRoutes
+  .route("/admin/subjects")
   .get(SubjectController.findAll)
   .post(SubjectController.createSubject)
-mainRoutes.route('/admin/subject')
+mainRoutes
+  .route("/admin/subject")
   .get(SubjectController.findById)
   .put(SubjectController.updateSubjects)
   .delete(SubjectController.deleteSubject)
