@@ -1,11 +1,13 @@
 import { Router } from "express"
 
 import { auth } from "./auth"
+import { admin } from "./admin"
 import { students } from "./students"
 
 export const mainRoutes = Router()
 
 mainRoutes.post("/auth", auth)
+mainRoutes.use("/admin", admin)
 mainRoutes.use("/students", students)
 
 // TO-DO - Refactoring
@@ -22,31 +24,3 @@ mainRoutes.post(
   sendNotification
 )
 mainRoutes.get("/notifications", authenticated, getNotifications)
-
-// TO-DO - Legacy - Delete all below
-import CoursesController from "./admin/controllers/CoursesController"
-import SubjectController from "./admin/controllers/SubjectController"
-
-// Admin routes:
-
-// COURSES
-mainRoutes
-  .route("/admin/courses")
-  .get(CoursesController.findAll)
-  .post(CoursesController.createCourses)
-mainRoutes
-  .route("/admin/course/:id")
-  .get(CoursesController.findById)
-  .put(CoursesController.updateCourses)
-  .delete(CoursesController.deleteCourses)
-
-// SUBJECTS
-mainRoutes
-  .route("/admin/subjects")
-  .get(SubjectController.findAll)
-  .post(SubjectController.createSubject)
-mainRoutes
-  .route("/admin/subject")
-  .get(SubjectController.findById)
-  .put(SubjectController.updateSubjects)
-  .delete(SubjectController.deleteSubject)
