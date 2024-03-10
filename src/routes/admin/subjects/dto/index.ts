@@ -16,7 +16,7 @@ export class FindSubjectFiltersDto {
 }
 
 export interface Subject {
-  id: string
+  id: number
   name: string
   description: string
 }
