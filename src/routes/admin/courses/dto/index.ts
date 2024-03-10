@@ -10,6 +10,11 @@ export class CreateAndUpdateCourseDto {
   description!: string
 }
 
+export class FindCourseFiltersDto {
+  @IsString()
+  name!: string
+}
+
 export interface Course {
   id: string
   name: string

@@ -1,7 +1,6 @@
-import type { Request, Response } from "express"
-
 import { supabase } from "../../../databases/supabase"
 
+import type { Request, Response } from "express"
 import type { Course } from "./dto"
 
 export async function findById(req: Request, res: Response) {

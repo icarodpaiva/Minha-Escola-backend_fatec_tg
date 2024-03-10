@@ -1,15 +1,15 @@
 import { Router } from "express"
 
 import { create } from "./create"
-import { findAll } from "./findAll"
+import { find } from "./find"
 import { findById } from "./findById"
-import { update } from "./updateById"
-import { deleteById } from "./deleteById"
+import { update } from "./update"
+import { deleteCourse } from "./delete"
 
 export const courses = Router()
 
 courses.post("/", create)
-courses.get("/", findAll)
+courses.get("/", find)
 courses.get("/:id", findById)
 courses.put("/:id", update)
-courses.delete("/:id", deleteById)
+courses.delete("/:id", deleteCourse)

@@ -1,9 +1,8 @@
-import type { Request, Response } from "express"
-
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-
 import { CreateAndUpdateCourseDto } from "./dto"
+
+import type { Request, Response } from "express"
 
 export async function create(req: Request, res: Response) {
   try {
