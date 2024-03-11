@@ -3,6 +3,7 @@ import { supabase } from "../databases/supabase"
 import type { Request, Response, NextFunction } from "express"
 
 interface IsAdmin {
+  id: number
   is_admin: boolean
 }
 
@@ -24,7 +25,7 @@ export async function isAdmin(_: Request, res: Response, next: NextFunction) {
       error: any
     } = await supabase
       .from("staff")
-      .select("is_admin")
+      .select("id,is_admin")
       .eq("auth_user_id", auth_user_id)
       .limit(1)
 
@@ -33,7 +34,7 @@ export async function isAdmin(_: Request, res: Response, next: NextFunction) {
       return
     }
 
-    if (!staff || !staff.length) {
+    if (!staff?.length) {
       res.status(404).send("Not found")
       return
     }
@@ -42,6 +43,8 @@ export async function isAdmin(_: Request, res: Response, next: NextFunction) {
       res.status(403).send("Forbidden")
       return
     }
+
+    res.locals.admin_id = staff[0].id
 
     next()
   } catch (error) {
