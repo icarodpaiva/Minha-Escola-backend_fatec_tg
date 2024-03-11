@@ -7,6 +7,11 @@ export async function findById(req: Request, res: Response) {
   try {
     const { id } = req.params
 
+    if (!id) {
+      res.status(400).send("Missing id parameter")
+      return
+    }
+
     const { data, error }: { data: Subject[] | null; error: any } =
       await supabase.from("subjects").select("*").eq("id", id).limit(1)
 

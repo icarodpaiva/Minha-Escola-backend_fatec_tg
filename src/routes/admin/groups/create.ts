@@ -1,38 +1,31 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { CreateAndUpdateSubjectDto } from "./dto"
+import { CreateAndUpdateGroupDto } from "./dto"
 
 import type { Request, Response } from "express"
 
-export async function update(req: Request, res: Response) {
+export async function create(req: Request, res: Response) {
   try {
-    const { id } = req.params
-
-    if (!id) {
-      res.status(400).send("Missing id parameter")
-      return
-    }
-
     if (!req.body) {
       return res.status(400).send("Missing body")
     }
 
-    const subject = new CreateAndUpdateSubjectDto()
+    const group = new CreateAndUpdateGroupDto()
 
-    subject.name = req.body.name
-    subject.description = req.body.description
+    group.name = req.body.name
+    group.year = req.body.year
+    group.semester = req.body.semester
+    group.subject_id = req.body.subject_id
+    group.teacher_id = req.body.teacher_id
 
-    const errors = await validateClass(subject)
+    const errors = await validateClass(group)
 
     if (errors) {
       res.status(400).send(errors)
       return
     }
 
-    const { error } = await supabase
-      .from("subjects")
-      .update(subject)
-      .eq("id", id)
+    const { error } = await supabase.from("groups").insert(group)
 
     if (error) {
       console.log(error)
@@ -40,7 +33,7 @@ export async function update(req: Request, res: Response) {
       return
     }
 
-    res.status(204).end()
+    res.status(201).end()
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

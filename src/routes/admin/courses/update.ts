@@ -8,6 +8,11 @@ export async function update(req: Request, res: Response) {
   try {
     const { id } = req.params
 
+    if (!id) {
+      res.status(400).send("Missing id parameter")
+      return
+    }
+
     if (!req.body) {
       return res.status(400).send("Missing body")
     }

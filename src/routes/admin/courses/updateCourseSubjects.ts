@@ -6,11 +6,16 @@ import type { Request, Response } from "express"
 
 export async function updateCourseSubjects(req: Request, res: Response) {
   try {
+    const { id } = req.params
+
+    if (!id) {
+      res.status(400).send("Missing id parameter")
+      return
+    }
+
     if (!req.body) {
       return res.status(400).send("Missing body")
     }
-
-    const { id } = req.params
 
     const courseSubjects = new UpdateCourseSubjectsDto()
 

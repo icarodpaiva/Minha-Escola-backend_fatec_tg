@@ -1,7 +1,7 @@
 import { supabase } from "../../../databases/supabase"
 
 import type { Request, Response } from "express"
-import type { Course } from "./dto"
+import type { Group } from "./dto"
 
 export async function findById(req: Request, res: Response) {
   try {
@@ -12,8 +12,11 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: Course[] | null; error: any } =
-      await supabase.from("courses").select("*").eq("id", id).limit(1)
+    const { data, error }: { data: Group[] | null; error: any } = await supabase
+      .from("groups")
+      .select("*")
+      .eq("id", id)
+      .limit(1)
 
     if (error) {
       console.log(error)
