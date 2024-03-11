@@ -1,6 +1,7 @@
 import {
   ValidatorConstraint,
-  ValidatorConstraintInterface
+  ValidatorConstraintInterface,
+  ValidationArguments
 } from "class-validator"
 
 @ValidatorConstraint({ name: "IsUniqueArray", async: false })
@@ -14,7 +15,7 @@ export class IsUniqueArray implements ValidatorConstraintInterface {
     return array.length === uniqueArray.length
   }
 
-  defaultMessage() {
-    return "the array must contain unique values"
+  defaultMessage(args: ValidationArguments) {
+    return `${args.property} must contain unique values`
   }
 }
