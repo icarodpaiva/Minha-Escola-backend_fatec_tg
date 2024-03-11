@@ -24,7 +24,7 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    if (!data || !data.length) {
+    if (!data?.length) {
       res.status(404).send("Not found")
       return
     }
