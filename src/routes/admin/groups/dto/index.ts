@@ -14,6 +14,9 @@ export class CreateAndUpdateGroupDto {
   semester!: Semester
 
   @IsInt()
+  capacity!: number
+
+  @IsInt()
   subject_id!: number
 
   @IsOptional()
@@ -31,6 +34,7 @@ export interface Group {
   name: string
   year: number
   semester: Semester
+  capacity: number
   subject_id: number
   teacher_id: number | null
 }
