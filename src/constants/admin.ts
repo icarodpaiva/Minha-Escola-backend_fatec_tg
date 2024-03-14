@@ -1,0 +1,1 @@
+export const NOTIFICATION_TOPICS_CHANNELS = [3]

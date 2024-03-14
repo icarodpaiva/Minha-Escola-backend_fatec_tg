@@ -11,10 +11,24 @@ export async function deleteNotification(req: Request, res: Response) {
       return
     }
 
-    const { error } = await supabase.from("notifications").delete().eq("id", id)
+    const { error: groupsNotificationsError } = await supabase
+      .from("groups_notifications")
+      .delete()
+      .eq("notification_id", id)
 
-    if (error) {
-      console.log(error)
+    if (groupsNotificationsError) {
+      console.log(groupsNotificationsError)
+      res.status(500).send("Internal server error")
+      return
+    }
+
+    const { error: notificationsError } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("id", id)
+
+    if (notificationsError) {
+      console.log(notificationsError)
       res.status(500).send("Internal server error")
       return
     }

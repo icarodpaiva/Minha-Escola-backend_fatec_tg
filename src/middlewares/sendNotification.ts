@@ -1,13 +1,50 @@
 import axios from "axios"
+import {
+  ArrayMinSize,
+  IsArray,
+  IsInt,
+  IsString,
+  MaxLength
+} from "class-validator"
 
-import { supabase } from "../../databases/supabase"
+import { validateClass } from "../utils/validateClass"
+import { supabase } from "../databases/supabase"
 
 import type { Request, Response } from "express"
-import type { SendNotificationDto } from "../../middlewares/notificationTopics"
 
-export async function sendNotification(req: Request, res: Response) {
+class SendNotificationDto {
+  @IsInt({ each: true })
+  @ArrayMinSize(1)
+  @IsArray()
+  topics!: number[]
+
+  @MaxLength(50)
+  @IsString()
+  title!: string
+
+  @MaxLength(200)
+  @IsString()
+  message!: string
+
+  @IsInt()
+  staff_id!: number
+}
+
+export async function sendNotification(_: Request, res: Response) {
   try {
-    const notification = req.body as SendNotificationDto
+    const notification = new SendNotificationDto()
+
+    notification.topics = res.locals.notification.topics
+    notification.title = res.locals.notification.title
+    notification.message = res.locals.notification.message
+    notification.staff_id = res.locals.notification.staff_id
+
+    const errors = await validateClass(notification)
+
+    if (errors) {
+      res.status(400).send(errors)
+      return
+    }
 
     const condition = notification.topics
       .map(topic => `'${topic}' in topics`)
@@ -40,7 +77,8 @@ export async function sendNotification(req: Request, res: Response) {
       .insert({
         id: notification_id,
         title: notification.title,
-        message: notification.message
+        message: notification.message,
+        staff_id: notification.staff_id
       })
 
     if (notificationError) {
@@ -49,9 +87,7 @@ export async function sendNotification(req: Request, res: Response) {
       return
     }
 
-    const {
-      error: groupNotificationsError
-    }: { data: Notification[] | null; error: any } = await supabase
+    const { error: groupNotificationsError }: { error: any } = await supabase
       .from("groups_notifications")
       .insert(
         notification.topics.map(group_id => ({ group_id, notification_id }))
@@ -63,7 +99,7 @@ export async function sendNotification(req: Request, res: Response) {
       return
     }
 
-    res.status(200).send("OK")
+    res.status(201).end()
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

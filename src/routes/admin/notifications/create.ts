@@ -1,31 +1,22 @@
-import { supabase } from "../../../databases/supabase"
-import { validateClass } from "../../../utils/validateClass"
-import { CreateAndUpdateNotificationDto } from "./dto"
+import { NOTIFICATION_TOPICS_CHANNELS } from "../../../constants/admin"
 
-import type { Request, Response } from "express"
+import type { Request, Response, NextFunction } from "express"
 
-export async function create(req: Request, res: Response) {
+export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.body) {
       return res.status(400).send("Missing body")
     }
 
-    const notification = new CreateAndUpdateNotificationDto()
-
-    notification.title = req.body.title
-    notification.message = req.body.message
-    notification.staff_id = res.locals.admin_id
-
-    const errors = await validateClass(location)
-
-    if (errors) {
-      res.status(400).send(errors)
-      return
+    const notification = {
+      ...req.body,
+      topics: NOTIFICATION_TOPICS_CHANNELS,
+      staff_id: res.locals.admin_id
     }
 
-    // TO-DO: Send notification
+    res.locals.notification = notification
 
-    res.status(201).end()
+    next()
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")
