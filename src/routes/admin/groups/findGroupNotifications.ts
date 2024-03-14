@@ -1,9 +1,9 @@
 import { supabase } from "../../../databases/supabase"
+import { GroupNotifications } from "./dto"
 
 import type { Request, Response } from "express"
-import type { CourseSubjectType } from "./dto"
 
-export async function findCourseSubjects(req: Request, res: Response) {
+export async function findGroupNotifications(req: Request, res: Response) {
   try {
     const { id } = req.params
 
@@ -13,10 +13,10 @@ export async function findCourseSubjects(req: Request, res: Response) {
     }
 
     const { data, error } = (await supabase
-      .from("courses_subjects")
-      .select("id, semester, subjects(id, name)")
-      .eq("course_id", parseInt(id, 10))) as {
-      data: CourseSubjectType[] | null
+      .from("groups_notifications")
+      .select("id, notifications(id, title, message, staff(id, name))")
+      .eq("group_id", parseInt(id, 10))) as {
+      data: GroupNotifications[] | null
       error: any
     }
 
@@ -31,12 +31,15 @@ export async function findCourseSubjects(req: Request, res: Response) {
       return
     }
 
-    const formattedCourseSubjects = data.map(
-      ({ subjects: subject, ...rest }) => ({
-        ...rest,
-        subject
-      })
-    )
+    const formattedCourseSubjects = data.map(({ id, notifications }) => {
+      const { staff, ...notification } = notifications
+
+      return {
+        id,
+        notification,
+        staff
+      }
+    })
 
     res.status(200).send(formattedCourseSubjects)
   } catch (error) {

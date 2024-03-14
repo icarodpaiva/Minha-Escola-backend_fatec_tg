@@ -42,6 +42,8 @@ export interface Course {
 export interface CourseSubjectType {
   id: number
   semester: number
-  course_id: number
-  subject_id: number
+  subjects: {
+    id: number
+    name: string
+  }
 }
