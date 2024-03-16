@@ -6,6 +6,7 @@ import { groups } from "./groups"
 import { classes } from "./classes"
 import { locations } from "./locations"
 import { notifications } from "./notifications"
+import { students } from "./students"
 
 export const admin = Router()
 
@@ -15,3 +16,4 @@ admin.use("/groups", groups)
 admin.use("/classes", classes)
 admin.use("/locations", locations)
 admin.use("/notifications", notifications)
+admin.use("/students", students)
