@@ -8,7 +8,7 @@ export async function find(req: Request, res: Response) {
   try {
     const filters = new FindNotificationFiltersDto()
 
-    filters.title = (req.query.title ?? "") as string
+    filters.title = (req.query.title || "") as string
 
     const errors = await validateClass(filters)
 

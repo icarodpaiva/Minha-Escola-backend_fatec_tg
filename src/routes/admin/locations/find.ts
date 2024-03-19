@@ -8,8 +8,8 @@ export async function find(req: Request, res: Response) {
   try {
     const filters = new FindLocationFiltersDto()
 
-    filters.building = (req.query.building ?? "") as string
-    filters.classroom = (req.query.classroom ?? "") as string
+    filters.building = (req.query.building || "") as string
+    filters.classroom = (req.query.classroom || "") as string
 
     const errors = await validateClass(filters)
 

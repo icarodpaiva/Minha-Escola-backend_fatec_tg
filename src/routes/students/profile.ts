@@ -34,7 +34,7 @@ export async function profile(_: Request, res: Response) {
       return
     }
 
-    if (!student || student.length === 0) {
+    if (!student?.length) {
       res.status(404).send("Not found")
       return
     }
