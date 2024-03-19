@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsString, IsEmail, IsInt } from "class-validator"
+import { IsNotEmpty, IsString, IsEmail, IsInt, IsUUID } from "class-validator"
 
-export class CreateAndUpdateStudentDto {
+export class CreateStudentDto {
   @IsNotEmpty()
   @IsString()
   name!: string
@@ -22,6 +22,11 @@ export class CreateAndUpdateStudentDto {
 
   @IsInt()
   course_id!: string
+}
+
+export class UpdateStudentDto extends CreateStudentDto {
+  @IsUUID()
+  auth_user_id!: string
 }
 
 export class FindStudentFiltersDto {

@@ -1,6 +1,6 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { CreateAndUpdateStudentDto } from "./dto"
+import { CreateStudentDto } from "./dto"
 
 import type { Request, Response } from "express"
 
@@ -10,7 +10,7 @@ export async function create(req: Request, res: Response) {
       return res.status(400).send("Missing body")
     }
 
-    const student = new CreateAndUpdateStudentDto()
+    const student = new CreateStudentDto()
 
     student.name = req.body.name
     student.email = req.body.email
@@ -26,15 +26,14 @@ export async function create(req: Request, res: Response) {
       return
     }
 
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: student.email,
-      password: student.document,
-      options: {
-        data: {
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email: student.email,
+        password: student.document,
+        user_metadata: {
           is_staff: false
         }
-      }
-    })
+      })
 
     if (authError || !authData.user) {
       console.log(authError)

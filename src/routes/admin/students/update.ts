@@ -1,6 +1,6 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { CreateAndUpdateSubjectDto } from "./dto"
+import { UpdateStudentDto } from "./dto"
 
 import type { Request, Response } from "express"
 
@@ -17,25 +17,41 @@ export async function update(req: Request, res: Response) {
       return res.status(400).send("Missing body")
     }
 
-    const subject = new CreateAndUpdateSubjectDto()
+    const student = new UpdateStudentDto()
 
-    subject.name = req.body.name
-    subject.description = req.body.description
+    student.name = req.body.name
+    student.email = req.body.email
+    student.document = req.body.document
+    student.sr = req.body.sr
+    student.semester = req.body.semester
+    student.course_id = req.body.course_id
+    student.auth_user_id = req.body.auth_user_id
 
-    const errors = await validateClass(subject)
+    const errors = await validateClass(student)
 
     if (errors) {
       res.status(400).send(errors)
       return
     }
 
-    const { error } = await supabase
-      .from("subjects")
-      .update(subject)
+    const { error: studentsError } = await supabase
+      .from("students")
+      .update(student)
       .eq("id", id)
 
-    if (error) {
-      console.log(error)
+    if (studentsError) {
+      console.log(studentsError)
+      res.status(500).send("Internal server error")
+      return
+    }
+
+    const { error: authError } = await supabase.auth.admin.updateUserById(
+      student.auth_user_id,
+      { email: student.email }
+    )
+
+    if (authError) {
+      console.log(authError)
       res.status(500).send("Internal server error")
       return
     }
