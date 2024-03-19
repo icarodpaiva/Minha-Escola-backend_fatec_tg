@@ -6,14 +6,14 @@ interface Student {
   id: number
   name: string
   email: string
-  ar: string
+  sr: string
   document: string
 }
 
 export async function profile(_: Request, res: Response) {
   try {
     const auth_user_id: string = res.locals.auth_user_id
-    const is_staff: boolean =  res.locals.is_staff
+    const is_staff: boolean = res.locals.is_staff
 
     if (is_staff) {
       res.status(400).send("Use staff routes")
@@ -25,7 +25,7 @@ export async function profile(_: Request, res: Response) {
       error: studentError
     }: { data: Student[] | null; error: any } = await supabase
       .from("students")
-      .select("id, name, email, ar, document")
+      .select("id, name, email, sr, document")
       .eq("auth_user_id", auth_user_id)
       .limit(1)
 
