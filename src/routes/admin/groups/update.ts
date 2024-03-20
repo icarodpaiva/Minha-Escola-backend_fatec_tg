@@ -22,7 +22,6 @@ export async function update(req: Request, res: Response) {
     group.name = req.body.name
     group.year = req.body.year
     group.semester = req.body.semester
-    group.capacity = req.body.capacity
     group.subject_id = req.body.subject_id
     group.teacher_id = req.body.teacher_id ?? null
 
