@@ -53,3 +53,14 @@ export interface GroupNotifications {
     }
   }
 }
+
+export interface GroupStudentsType {
+  id: number
+  students: {
+    id: number
+    name: string
+    email: string
+    semester: number
+    courses: { name: string }
+  }
+}
