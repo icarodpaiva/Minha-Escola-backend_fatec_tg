@@ -2,15 +2,11 @@ import { supabase } from "../../databases/supabase"
 
 import type { Request, Response } from "express"
 
-interface Student {
-  id: number
-  name: string
-  email: string
-  sr: string
-  document: string
+interface Groups {
+  group_id: number
 }
 
-export async function profile(_: Request, res: Response) {
+export async function topics(_: Request, res: Response) {
   try {
     const auth_user_id: string = res.locals.auth_user_id
     const is_staff: boolean = res.locals.is_staff
@@ -20,12 +16,14 @@ export async function profile(_: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: Student[] | null; error: any } =
-      await supabase
-        .from("students")
-        .select("id, name, email, sr, document")
-        .eq("auth_user_id", auth_user_id)
-        .limit(1)
+    const { data, error } = (await supabase
+      .from("students_groups")
+      .select("group_id, students()")
+      .eq("students.auth_user_id", auth_user_id)
+      .not("students", "is", null)) as {
+      data: Groups[] | null
+      error: any
+    }
 
     if (error) {
       console.log(error)
@@ -38,7 +36,9 @@ export async function profile(_: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data[0])
+    const topicsList = data.map(({ group_id }) => group_id)
+
+    res.status(200).send(topicsList)
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

@@ -11,7 +11,6 @@ class ClassesDto {
 
 interface Groups {
   groups: {
-    id: number
     subjects: {
       name: string
     }
@@ -23,6 +22,7 @@ interface Groups {
 }
 
 interface Class {
+  id: number
   date: string
   start_time: string
   end_time: string
@@ -59,10 +59,10 @@ export async function classes(req: Request, res: Response) {
       .from("students_groups")
       .select(
         `groups(
-          id,
           subjects(name),
           staff(name),
           classes(
+            id,
             date,
             start_time,
             end_time,
@@ -73,6 +73,7 @@ export async function classes(req: Request, res: Response) {
       )
       .eq("students.auth_user_id", auth_user_id)
       .eq("groups.classes.date", filters.date)
+      .not("students", "is", null)
       .not("groups", "is", null)
       .not("groups.classes", "is", null)) as {
       data: Groups[] | null
@@ -85,17 +86,16 @@ export async function classes(req: Request, res: Response) {
       return
     }
 
-    if (!groups || groups.length === 0) {
+    if (!groups?.length) {
       res.status(404).send("Not found")
       return
     }
 
     const formattedClasses = groups.map(({ groups: studentGroups }) => {
       const {
-        id,
         staff,
         subjects,
-        classes: [{ date, start_time, end_time, locations }]
+        classes: [{ id, date, start_time, end_time, locations }]
       } = studentGroups
 
       const { building, floor, classroom } = locations
