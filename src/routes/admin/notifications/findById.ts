@@ -1,7 +1,7 @@
 import { supabase } from "../../../databases/supabase"
 
 import type { Request, Response } from "express"
-import type { Subject } from "./dto"
+import type { Notification } from "./dto"
 
 export async function findById(req: Request, res: Response) {
   try {
@@ -12,8 +12,8 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: Subject[] | null; error: any } =
-      await supabase.from("subjects").select("*").eq("id", id).limit(1)
+    const { data, error }: { data: Notification[] | null; error: any } =
+      await supabase.from("notifications").select("*").eq("id", id).limit(1)
 
     if (error) {
       console.log(error)

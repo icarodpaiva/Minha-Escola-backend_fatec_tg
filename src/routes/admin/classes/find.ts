@@ -8,7 +8,7 @@ export async function find(req: Request, res: Response) {
   try {
     const filters = new FindClassFiltersDto()
 
-    filters.name = (req.query.name ?? "") as string
+    filters.name = (req.query.name || "") as string
 
     const errors = await validateClass(filters)
 

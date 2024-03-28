@@ -1,14 +1,15 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { FindGroupFiltersDto, Group } from "./dto"
+import { FindLocationFiltersDto, Location } from "./dto"
 
 import type { Request, Response } from "express"
 
 export async function find(req: Request, res: Response) {
   try {
-    const filters = new FindGroupFiltersDto()
+    const filters = new FindLocationFiltersDto()
 
-    filters.name = (req.query.name || "") as string
+    filters.building = (req.query.building || "") as string
+    filters.classroom = (req.query.classroom || "") as string
 
     const errors = await validateClass(filters)
 
@@ -16,10 +17,12 @@ export async function find(req: Request, res: Response) {
       return res.status(400).send(errors)
     }
 
-    const { data, error }: { data: Group[] | null; error: any } = await supabase
-      .from("groups")
-      .select("*")
-      .ilike("name", `%${filters.name}%`)
+    const { data, error }: { data: Location[] | null; error: any } =
+      await supabase
+        .from("locations")
+        .select("*")
+        .ilike("building", `%${filters.building}%`)
+        .ilike("classroom", `%${filters.classroom}%`)
 
     if (error) {
       console.log(error)

@@ -4,7 +4,7 @@ import {
   ValidationArguments
 } from "class-validator"
 
-@ValidatorConstraint({ name: "IsUniqueArray", async: false })
+@ValidatorConstraint({ name: "IsTime", async: false })
 export class IsTime implements ValidatorConstraintInterface {
   validate(value: any) {
     const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/

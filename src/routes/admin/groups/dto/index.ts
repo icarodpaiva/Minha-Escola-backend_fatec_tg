@@ -36,3 +36,27 @@ export interface Group {
 }
 
 type Semester = (typeof SEMESTER_VALUES)[number]
+
+export interface GroupNotifications {
+  id: number
+  notifications: {
+    id: number
+    title: string
+    message: string
+    staff: {
+      id: number
+      name: string
+    }
+  }
+}
+
+export interface GroupStudentsType {
+  id: number
+  students: {
+    id: number
+    name: string
+    email: string
+    semester: number
+    courses: { name: string }
+  }
+}

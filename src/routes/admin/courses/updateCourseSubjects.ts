@@ -20,7 +20,7 @@ export async function updateCourseSubjects(req: Request, res: Response) {
     const courseSubjects = new UpdateCourseSubjectsDto()
 
     courseSubjects.course_id = parseInt(id, 10)
-    courseSubjects.subject_ids = req.body.subject_ids
+    courseSubjects.subjects = req.body.subjects
 
     const errors = await validateClass(courseSubjects)
 
@@ -40,9 +40,9 @@ export async function updateCourseSubjects(req: Request, res: Response) {
       return
     }
 
-    const inserts = courseSubjects.subject_ids.map(subject_id => ({
+    const inserts = courseSubjects.subjects.map(subject => ({
       course_id: courseSubjects.course_id,
-      subject_id
+      ...subject
     }))
 
     const { error: insertError } = await supabase

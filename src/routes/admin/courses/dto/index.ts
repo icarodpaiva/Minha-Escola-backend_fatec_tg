@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsInt, IsArray, Validate } from "class-validator"
-import { IsUniqueArray } from "../../../../decorators/IsUniqueArray"
+import { IsSubjectArray } from "../../../../decorators/IsSubjectArray"
 
 export class CreateAndUpdateCourseDto {
   @IsString()
@@ -16,18 +16,34 @@ export class FindCourseFiltersDto {
   name!: string
 }
 
+export class CourseSubject {
+  @IsInt()
+  subject_id!: number
+
+  @IsInt()
+  semester!: number
+}
+
 export class UpdateCourseSubjectsDto {
   @IsInt()
   course_id!: number
 
-  @Validate(IsUniqueArray)
-  @IsInt({ each: true })
   @IsArray()
-  subject_ids!: number[]
+  @Validate(IsSubjectArray)
+  subjects!: CourseSubject[]
 }
 
 export interface Course {
   id: number
   name: string
   description: string
+}
+
+export interface CourseSubjectType {
+  id: number
+  semester: number
+  subjects: {
+    id: number
+    name: string
+  }
 }
