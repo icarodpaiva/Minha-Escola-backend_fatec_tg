@@ -8,6 +8,14 @@ interface Student {
   email: string
   sr: string
   document: string
+  semester: number
+  courses: {
+    name: string
+  }
+}
+
+interface FormattedStudent extends Omit<Student, "courses"> {
+  course: string
 }
 
 export async function profile(_: Request, res: Response) {
@@ -20,12 +28,11 @@ export async function profile(_: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: Student[] | null; error: any } =
-      await supabase
-        .from("students")
-        .select("id, name, email, sr, document")
-        .eq("auth_user_id", auth_user_id)
-        .limit(1)
+    const { data, error } = (await supabase
+      .from("students")
+      .select("id, name, email, sr, document, semester, courses(name)")
+      .eq("auth_user_id", auth_user_id)
+      .limit(1)) as { data: Student[] | null; error: any }
 
     if (error) {
       console.log(error)
@@ -38,7 +45,16 @@ export async function profile(_: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data[0])
+    const formattedProfile: FormattedStudent = data.map(student => {
+      const { courses, ...rest } = student
+
+      return {
+        ...rest,
+        course: courses.name
+      }
+    })[0]
+
+    res.status(200).send(formattedProfile)
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

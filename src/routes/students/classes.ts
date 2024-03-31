@@ -23,6 +23,7 @@ interface Groups {
 
 interface Class {
   id: number
+  name: string
   date: string
   start_time: string
   end_time: string
@@ -63,6 +64,7 @@ export async function classes(req: Request, res: Response) {
           staff(name),
           classes(
             id,
+            name,
             date,
             start_time,
             end_time,
@@ -95,7 +97,7 @@ export async function classes(req: Request, res: Response) {
       const {
         staff,
         subjects,
-        classes: [{ id, date, start_time, end_time, locations }]
+        classes: [{ id, name, date, start_time, end_time, locations }]
       } = studentGroups
 
       const { building, floor, classroom } = locations
@@ -104,6 +106,7 @@ export async function classes(req: Request, res: Response) {
         id,
         subject: subjects.name,
         teacher: staff.name,
+        name,
         date,
         start_time: start_time.slice(0, 5),
         end_time: end_time.slice(0, 5),
