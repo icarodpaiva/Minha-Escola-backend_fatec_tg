@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/api/index.ts"
+    "dev": "nodemon api/index.ts",
+    "start": "node api/index.ts"
   },
   "author": "icaro paiva",
   "license": "ISC",
