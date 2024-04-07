@@ -12,7 +12,7 @@ export async function topics(_: Request, res: Response) {
     const is_staff: boolean = res.locals.is_staff
 
     if (is_staff) {
-      res.status(400).send("Use staff routes")
+      res.status(200).send([])
       return
     }
 

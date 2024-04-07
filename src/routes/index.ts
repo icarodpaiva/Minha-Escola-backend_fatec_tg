@@ -5,10 +5,10 @@ import { isAdmin } from "../middlewares/isAdmin"
 
 import { auth } from "./auth"
 import { admin } from "./admin"
-import { students } from "./students"
+import { app } from "./app"
 
 export const mainRoutes = Router()
 
 mainRoutes.use("/auth", auth)
 mainRoutes.use("/admin", isAuthenticated, isAdmin, admin)
-mainRoutes.use("/students", isAuthenticated, students)
+mainRoutes.use("/app", isAuthenticated, app)

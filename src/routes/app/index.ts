@@ -5,9 +5,9 @@ import { classes } from "./classes"
 import { topics } from "./topics"
 import { notifications } from "./notifications"
 
-export const students = Router()
+export const app = Router()
 
-students.get("/profile", profile)
-students.get("/classes", classes)
-students.get("/topics", topics)
-students.get("/notifications", notifications)
+app.get("/profile", profile)
+app.get("/classes", classes)
+app.get("/topics", topics)
+app.get("/notifications", notifications)

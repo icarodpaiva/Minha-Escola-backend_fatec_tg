@@ -35,12 +35,24 @@ interface FormattedNotification {
 export async function notifications(_: Request, res: Response) {
   try {
     const auth_user_id: string = res.locals.auth_user_id
+    const is_staff: boolean = res.locals.is_staff
 
-    const { data: groups, error: groupsError } = (await supabase
+    const query = supabase
       .from("students_groups")
-      .select("group_id, students()")
-      .eq("students.auth_user_id", auth_user_id)
-      .not("students", "is", null)) as {
+      .select("group_id, students(), groups(staff())")
+
+    if (is_staff) {
+      query
+        .eq("groups.staff.auth_user_id", auth_user_id)
+        .not("groups", "is", null)
+        .not("groups.staff", "is", null)
+    } else {
+      query
+        .eq("students.auth_user_id", auth_user_id)
+        .not("students", "is", null)
+    }
+
+    const { data: groups, error: groupsError } = (await query) as {
       data: Groups[] | null
       error: any
     }
@@ -51,7 +63,7 @@ export async function notifications(_: Request, res: Response) {
       return
     }
 
-    if (!groups || groups.length === 0) {
+    if (!groups?.length) {
       res.status(404).send("Not found")
       return
     }
@@ -93,6 +105,7 @@ export async function notifications(_: Request, res: Response) {
 
     const uniqueNotifications: FormattedNotification[] = []
 
+    // TO-DO: Transform subject in a list of subjects
     notifications.forEach(notification => {
       const existingNotification = uniqueNotifications.find(
         ({ id }) => notification.notifications.id === id

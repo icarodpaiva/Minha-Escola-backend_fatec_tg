@@ -36,15 +36,25 @@ interface Locations {
   classroom: string
 }
 
+interface FormattedClass {
+  id: number
+  subject: string
+  teacher: string | null
+  name: string
+  date: string
+  start_time: string
+  end_time: string
+  location: {
+    building: string
+    floor: number
+    classroom: string
+  }
+}
+
 export async function classes(req: Request, res: Response) {
   try {
     const auth_user_id: string = res.locals.auth_user_id
     const is_staff: boolean = res.locals.is_staff
-
-    if (is_staff) {
-      res.status(400).send("Use staff routes")
-      return
-    }
 
     const filters = new ClassesDto()
 
@@ -56,7 +66,7 @@ export async function classes(req: Request, res: Response) {
       return res.status(400).send(errors)
     }
 
-    const { data: groups, error: groupsError } = (await supabase
+    const query = supabase
       .from("students_groups")
       .select(
         `groups(
@@ -73,11 +83,21 @@ export async function classes(req: Request, res: Response) {
         ),
         students()`
       )
-      .eq("students.auth_user_id", auth_user_id)
       .eq("groups.classes.date", filters.date)
-      .not("students", "is", null)
       .not("groups", "is", null)
-      .not("groups.classes", "is", null)) as {
+      .not("groups.classes", "is", null)
+
+    if (is_staff) {
+      query
+        .eq("groups.staff.auth_user_id", auth_user_id)
+        .not("groups.staff", "is", null)
+    } else {
+      query
+        .eq("students.auth_user_id", auth_user_id)
+        .not("students", "is", null)
+    }
+
+    const { data: groups, error: groupsError } = (await query) as {
       data: Groups[] | null
       error: any
     }
@@ -93,30 +113,33 @@ export async function classes(req: Request, res: Response) {
       return
     }
 
-    const formattedClasses = groups.map(({ groups: studentGroups }) => {
-      const {
-        staff,
-        subjects,
-        classes: [{ id, name, date, start_time, end_time, locations }]
-      } = studentGroups
+    const formattedClasses: FormattedClass[] = []
 
-      const { building, floor, classroom } = locations
+    groups.forEach(({ groups: dayGroups }) => {
+      const { staff, subjects, classes } = dayGroups
 
-      return {
-        id,
-        subject: subjects.name,
-        teacher: staff.name,
-        name,
-        date,
-        start_time: start_time.slice(0, 5),
-        end_time: end_time.slice(0, 5),
-        location: {
-          building,
-          floor,
-          classroom
-        }
-      }
+      classes.forEach(dayClass => {
+        const { id, name, date, start_time, end_time, locations } = dayClass
+        const { building, floor, classroom } = locations
+
+        formattedClasses.push({
+          id,
+          subject: subjects.name,
+          teacher: staff.name,
+          name,
+          date,
+          start_time: start_time.slice(0, 5),
+          end_time: end_time.slice(0, 5),
+          location: {
+            building,
+            floor,
+            classroom
+          }
+        })
+      })
     })
+
+    formattedClasses.sort((a, b) => a.start_time.localeCompare(b.start_time))
 
     res.status(200).send(formattedClasses)
   } catch (error) {
