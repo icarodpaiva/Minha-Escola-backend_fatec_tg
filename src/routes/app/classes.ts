@@ -23,7 +23,8 @@ interface Groups {
 
 interface Class {
   id: number
-  name: string
+  name: string | null
+  description: string | null
   date: string
   start_time: string
   end_time: string
@@ -36,19 +37,10 @@ interface Locations {
   classroom: string
 }
 
-interface FormattedClass {
-  id: number
+interface FormattedClass extends Omit<Class, 'locations'> {
   subject: string
   teacher: string | null
-  name: string
-  date: string
-  start_time: string
-  end_time: string
-  location: {
-    building: string
-    floor: number
-    classroom: string
-  }
+  location: Locations
 }
 
 export async function classes(req: Request, res: Response) {
@@ -75,6 +67,7 @@ export async function classes(req: Request, res: Response) {
           classes(
             id,
             name,
+            description,
             date,
             start_time,
             end_time,
@@ -119,22 +112,18 @@ export async function classes(req: Request, res: Response) {
       const { staff, subjects, classes } = dayGroups
 
       classes.forEach(dayClass => {
-        const { id, name, date, start_time, end_time, locations } = dayClass
-        const { building, floor, classroom } = locations
+        const { id, name, description, date, start_time, end_time, locations: location } = dayClass
 
         formattedClasses.push({
           id,
           subject: subjects.name,
           teacher: staff.name,
           name,
+          description,
           date,
           start_time: start_time.slice(0, 5),
           end_time: end_time.slice(0, 5),
-          location: {
-            building,
-            floor,
-            classroom
-          }
+          location
         })
       })
     })
