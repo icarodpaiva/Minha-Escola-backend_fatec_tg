@@ -11,6 +11,7 @@ class ClassesDto {
 
 interface Groups {
   groups: {
+    name: string
     subjects: {
       name: string
     }
@@ -37,8 +38,9 @@ interface Locations {
   classroom: string
 }
 
-interface FormattedClass extends Omit<Class, 'locations'> {
+interface FormattedClass extends Omit<Class, "locations"> {
   subject: string
+  group_name: string
   teacher: string | null
   location: Locations
 }
@@ -62,6 +64,7 @@ export async function classes(req: Request, res: Response) {
       .from("students_groups")
       .select(
         `groups(
+          name,
           subjects(name),
           staff(name),
           classes(
@@ -109,14 +112,23 @@ export async function classes(req: Request, res: Response) {
     const formattedClasses: FormattedClass[] = []
 
     groups.forEach(({ groups: dayGroups }) => {
-      const { staff, subjects, classes } = dayGroups
+      const { name: group_name, staff, subjects, classes } = dayGroups
 
       classes.forEach(dayClass => {
-        const { id, name, description, date, start_time, end_time, locations: location } = dayClass
+        const {
+          id,
+          name,
+          description,
+          date,
+          start_time,
+          end_time,
+          locations: location
+        } = dayClass
 
         formattedClasses.push({
           id,
           subject: subjects.name,
+          group_name,
           teacher: staff.name,
           name,
           description,
