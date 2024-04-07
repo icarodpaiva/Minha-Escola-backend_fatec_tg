@@ -13,14 +13,21 @@ export class UpdateClassDetailsDto {
   description!: string
 }
 
+interface IsTeacher {
+  groups: {
+    staff: {
+      auth_user_id: string
+    }
+  }
+}
+
 import type { Request, Response } from "express"
 
 export async function updateClassDetails(req: Request, res: Response) {
   try {
-    // TO-DO: Teachers just can edit its classes
-    const auth_user_id: string = res.locals.auth_user_id
     const is_staff: boolean = res.locals.is_staff
     const { id } = req.params
+    const auth_user_id: string = res.locals.auth_user_id
 
     if (!is_staff) {
       res.status(403).send("Forbidden")
@@ -29,6 +36,28 @@ export async function updateClassDetails(req: Request, res: Response) {
 
     if (!id) {
       res.status(400).send("Missing id parameter")
+      return
+    }
+
+    const { data: isTeacher, error: isTeacherError } = (await supabase
+      .from("classes")
+      .select("groups(staff(auth_user_id))")
+      .eq("id", id)
+      .eq("groups.staff.auth_user_id", auth_user_id)
+      .not("groups", "is", null)
+      .not("groups.staff", "is", null)) as {
+      data: IsTeacher[] | null
+      error: any
+    }
+
+    if (isTeacherError) {
+      console.log(isTeacherError)
+      res.status(500).send("Internal server error")
+      return
+    }
+
+    if (!isTeacher?.length) {
+      res.status(403).send("Forbidden")
       return
     }
 
@@ -52,7 +81,6 @@ export async function updateClassDetails(req: Request, res: Response) {
       .from("classes")
       .update(classDetails)
       .eq("id", id)
-      .select()
 
     if (error) {
       console.log(error)
