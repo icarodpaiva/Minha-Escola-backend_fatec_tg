@@ -13,6 +13,7 @@ export async function create(req: Request, res: Response) {
     const groupClass = new CreateAndUpdateClassDto()
 
     groupClass.name = req.body.name
+    groupClass.description = req.body.description
     groupClass.date = req.body.date
     groupClass.start_time = req.body.start_time
     groupClass.end_time = req.body.end_time

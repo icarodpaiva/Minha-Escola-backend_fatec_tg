@@ -1,16 +1,20 @@
 import {
-  IsNotEmpty,
+  IsOptional,
   IsString,
   IsDateString,
   Validate,
-  IsInt
+  IsInt,
 } from "class-validator"
 import { IsTime } from "../../../../decorators/IsTime"
 
 export class CreateAndUpdateClassDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   name!: string
+
+  @IsOptional()
+  @IsString()
+  description!: string
 
   @IsDateString()
   date!: string
@@ -31,11 +35,15 @@ export class CreateAndUpdateClassDto {
 export class FindClassFiltersDto {
   @IsString()
   name!: string
+
+  @IsString()
+  description!: string
 }
 
 export interface Class {
   id: number
-  name: string
+  name: string | null
+  description: string | null
   date: string
   start_time: string
   end_time: string

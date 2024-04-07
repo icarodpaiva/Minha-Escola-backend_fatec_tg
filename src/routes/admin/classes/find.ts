@@ -9,6 +9,7 @@ export async function find(req: Request, res: Response) {
     const filters = new FindClassFiltersDto()
 
     filters.name = (req.query.name || "") as string
+    filters.description = (req.query.description || "") as string
 
     const errors = await validateClass(filters)
 
@@ -16,10 +17,19 @@ export async function find(req: Request, res: Response) {
       return res.status(400).send(errors)
     }
 
-    const { data, error }: { data: Class[] | null; error: any } = await supabase
+    const query = supabase
       .from("classes")
       .select("*")
-      .ilike("name", `%${filters.name}%`)
+
+    if (filters.name) {
+      query.ilike("name", `%${filters.name}%`)
+    }
+
+    if (filters.description) {
+      query.ilike("description", `%${filters.description}%`)
+    }
+
+    const { data, error }: { data: Class[] | null; error: any } = await query
 
     if (error) {
       console.log(error)
