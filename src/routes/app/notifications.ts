@@ -8,6 +8,7 @@ interface Groups {
 
 interface Notifications {
   groups: {
+    name: string
     subjects: {
       name: string
     }
@@ -28,6 +29,7 @@ interface FormattedNotification {
   created_at: string
   title: string
   message: string
+  group_name: string
   subject: string
   author: string
 }
@@ -74,6 +76,7 @@ export async function notifications(_: Request, res: Response) {
       .from("groups_notifications")
       .select(
         `groups(
+          name,
           subjects(name)
         ),
         notifications(
@@ -113,12 +116,13 @@ export async function notifications(_: Request, res: Response) {
 
       if (!existingNotification) {
         const {
-          groups: { subjects },
+          groups: { name, subjects },
           notifications: { staff, ...rest }
         } = notification
 
         uniqueNotifications.push({
           ...rest,
+          group_name: name,
           subject: subjects.name,
           author: staff.name
         })
