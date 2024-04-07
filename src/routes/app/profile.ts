@@ -7,6 +7,11 @@ interface Staff {
   name: string
   email: string
   document: string
+
+  // Prevent typescript error, but this property doesn't exist to staff users
+  courses?: {
+    name: string
+  }
 }
 
 interface Student extends Staff {
@@ -60,13 +65,13 @@ export async function profile(_: Request, res: Response) {
       return
     }
 
-    const profile = data[0]
+    const { courses, ...profile } = data[0]
 
     const formattedProfile: Staff | FormattedStudent = is_staff
       ? profile
       : {
           ...profile,
-          course: (profile as Student).courses.name
+          course: courses?.name
         }
 
     res.status(200).send(formattedProfile)
