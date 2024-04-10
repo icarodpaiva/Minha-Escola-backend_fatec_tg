@@ -1,6 +1,6 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { FindGroupFiltersDto, Group } from "./dto"
+import { FindGroupFiltersDto, GroupResponse, Group } from "./dto"
 
 import type { Request, Response } from "express"
 
@@ -16,9 +16,9 @@ export async function find(req: Request, res: Response) {
       return res.status(400).send(errors)
     }
 
-    const { data, error }: { data: Group[] | null; error: any } = await supabase
+    const { data, error }: { data: GroupResponse[] | null; error: any } = await supabase
       .from("groups")
-      .select("*")
+      .select("*, subjects(name), staff(*)")
       .ilike("name", `%${filters.name}%`)
 
     if (error) {
@@ -27,7 +27,17 @@ export async function find(req: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data)
+    if (!data?.length) {
+      return res.status(404).send("Not found")
+    }
+
+    const formattedData: Group[] = data.map(({subjects, staff,...group}) => ({
+      ...group,
+      subject_name: subjects.name,
+      teacher_name: staff?.name ?? null
+    }))
+
+    res.status(200).send(formattedData)
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

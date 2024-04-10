@@ -18,8 +18,17 @@ export class FindNotificationFiltersDto {
   title!: string
 }
 
-export interface Notification {
+export interface NotificationResponse {
   id: number
+  created_at: string
   title: string
-  description: string
+  message: string
+  staff_id: number
+  staff: {
+    name: string
+  }
+}
+
+export interface Notification extends Omit<NotificationResponse, 'staff'> {
+  staff_name: string
 }

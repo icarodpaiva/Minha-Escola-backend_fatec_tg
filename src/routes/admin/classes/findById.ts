@@ -1,7 +1,7 @@
 import { supabase } from "../../../databases/supabase"
 
 import type { Request, Response } from "express"
-import type { Class } from "./dto"
+import type { ClassResponse, Class } from "./dto"
 
 export async function findById(req: Request, res: Response) {
   try {
@@ -12,9 +12,9 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: Class[] | null; error: any } = await supabase
+    const { data, error }: { data: ClassResponse[] | null; error: any } = await supabase
       .from("classes")
-      .select("*")
+      .select("*, locations(building, floor, classroom)")
       .eq("id", id)
       .limit(1)
 
@@ -29,7 +29,16 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data[0])
+    const formattedData: Class[] = data.map(({ locations, ...groupClass }) => ({
+      ...groupClass,
+      location: {
+        building: locations.building,
+        floor: locations.floor,
+        classroom: locations.classroom
+      }
+    }))
+
+    res.status(200).send(formattedData[0])
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

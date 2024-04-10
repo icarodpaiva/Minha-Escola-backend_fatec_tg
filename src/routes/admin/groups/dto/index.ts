@@ -26,13 +26,22 @@ export class FindGroupFiltersDto {
   name!: string
 }
 
-export interface Group {
+export interface GroupResponse {
   id: number
   name: string
   year: number
   semester: Semester
   subject_id: number
   teacher_id: number | null
+  subjects: {
+    name: string
+  }
+  staff: { name: string } | null
+}
+
+export interface Group extends Omit<GroupResponse, "subjects" | "staff"> {
+  subject_name: string
+  teacher_name: string | null
 }
 
 type Semester = (typeof SEMESTER_VALUES)[number]

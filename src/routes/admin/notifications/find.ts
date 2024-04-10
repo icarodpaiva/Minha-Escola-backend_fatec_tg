@@ -1,6 +1,6 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { FindNotificationFiltersDto, Notification } from "./dto"
+import { FindNotificationFiltersDto, NotificationResponse, Notification } from "./dto"
 
 import type { Request, Response } from "express"
 
@@ -16,10 +16,10 @@ export async function find(req: Request, res: Response) {
       return res.status(400).send(errors)
     }
 
-    const { data, error }: { data: Notification[] | null; error: any } =
+    const { data, error }: { data: NotificationResponse[] | null; error: any } =
       await supabase
         .from("notifications")
-        .select("*")
+        .select("*, staff(name)")
         .ilike("title", `%${filters.title}%`)
 
     if (error) {
@@ -28,7 +28,16 @@ export async function find(req: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data)
+    if (!data?.length) {
+      return res.status(404).send("Not found")
+    }
+
+    const formattedData: Notification[] = data.map(({staff, ...notification}) => ({
+      ...notification,
+      staff_name: staff.name
+    }))
+
+    res.status(200).send(formattedData)
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

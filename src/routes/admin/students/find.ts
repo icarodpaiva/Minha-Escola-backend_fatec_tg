@@ -1,6 +1,6 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { FindStudentFiltersDto, Student } from "./dto"
+import { FindStudentFiltersDto, StudentResponse, Student } from "./dto"
 
 import type { Request, Response } from "express"
 
@@ -20,8 +20,9 @@ export async function find(req: Request, res: Response) {
 
     const query = supabase
       .from("students")
-      .select("*")
+      .select("*, courses(name)")
       .ilike("name", `%${filters.name}%`)
+      .order("id")
 
     if (filters.semester) {
       query.eq("semester", filters.semester)
@@ -31,7 +32,8 @@ export async function find(req: Request, res: Response) {
       query.eq("course_id", filters.course_id)
     }
 
-    const { data, error }: { data: Student[] | null; error: any } = await query
+    const { data, error }: { data: StudentResponse[] | null; error: any } =
+      await query
 
     if (error) {
       console.log(error)
@@ -39,7 +41,16 @@ export async function find(req: Request, res: Response) {
       return
     }
 
-    res.status(200).send(data)
+    if (!data?.length) {
+      return res.status(404).send("Not found")
+    }
+
+    const formattedData: Student[] = data?.map(({ courses, ...student }) => ({
+      ...student,
+      course_name: courses.name
+    }))
+
+    res.status(200).send(formattedData)
   } catch (error) {
     console.log(error)
     res.status(500).send("Internal server error")

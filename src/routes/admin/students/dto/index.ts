@@ -40,7 +40,7 @@ export class FindStudentFiltersDto {
   course_id!: string
 }
 
-export interface Student {
+export interface StudentResponse {
   id: number
   name: string
   email: string
@@ -48,5 +48,12 @@ export interface Student {
   sr: string
   semester: string
   course_id: string
+  courses: {
+    name: string
+  }
   auth_user_id: string
+}
+
+export interface Student extends Omit<StudentResponse, "courses"> {
+  course_name: string
 }

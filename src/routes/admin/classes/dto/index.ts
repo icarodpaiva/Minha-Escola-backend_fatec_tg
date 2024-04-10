@@ -7,6 +7,8 @@ import {
 } from "class-validator"
 import { IsTime } from "../../../../decorators/IsTime"
 
+import type { Location } from "../../locations/dto"
+
 export class CreateAndUpdateClassDto {
   @IsOptional()
   @IsString()
@@ -40,7 +42,7 @@ export class FindClassFiltersDto {
   description!: string
 }
 
-export interface Class {
+export interface ClassResponse {
   id: number
   name: string | null
   description: string | null
@@ -49,4 +51,9 @@ export interface Class {
   end_time: string
   group_id: number
   location_id: number
+  locations: Omit<Location, 'id'>
+}
+
+export interface Class extends Omit<ClassResponse, 'locations'> {
+  location: Omit<Location, 'id'>
 }
