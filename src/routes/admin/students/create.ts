@@ -30,6 +30,7 @@ export async function create(req: Request, res: Response) {
       await supabase.auth.admin.createUser({
         email: student.email,
         password: student.document,
+        email_confirm: true,
         user_metadata: {
           is_staff: false
         }

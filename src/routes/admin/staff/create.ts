@@ -28,6 +28,7 @@ export async function create(req: Request, res: Response) {
       await supabase.auth.admin.createUser({
         email: staff.email,
         password: staff.document,
+        email_confirm: true,
         user_metadata: {
           is_staff: true
         }
