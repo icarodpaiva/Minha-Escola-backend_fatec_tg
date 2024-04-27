@@ -11,11 +11,11 @@ export class CreateStudentDto {
 
   @IsNotEmpty()
   @IsString()
-  document!: string
+  registration!: string
 
   @IsNotEmpty()
   @IsString()
-  sr!: string
+  document!: string
 
   @IsInt()
   semester!: string
@@ -45,7 +45,7 @@ export interface StudentResponse {
   name: string
   email: string
   document: string
-  sr: string
+  registration: string
   semester: string
   course_id: string
   courses: {

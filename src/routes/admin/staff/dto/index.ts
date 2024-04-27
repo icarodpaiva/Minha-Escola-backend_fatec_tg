@@ -19,6 +19,10 @@ export class CreateStaffDto {
 
   @IsNotEmpty()
   @IsString()
+  registration!: string
+
+  @IsNotEmpty()
+  @IsString()
   document!: string
 
   @IsBoolean()
@@ -47,6 +51,7 @@ export interface Staff {
   id: number
   name: string
   email: string
+  registration: string
   document: string
   is_admin: boolean
   auth_user_id: string

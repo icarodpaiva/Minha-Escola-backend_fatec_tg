@@ -14,6 +14,7 @@ export async function create(req: Request, res: Response) {
 
     staff.name = req.body.name
     staff.email = req.body.email
+    staff.registration = req.body.registration
     staff.document = req.body.document
     staff.is_admin = req.body.is_admin
 

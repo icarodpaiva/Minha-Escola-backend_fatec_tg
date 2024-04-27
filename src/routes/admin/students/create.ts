@@ -14,8 +14,8 @@ export async function create(req: Request, res: Response) {
 
     student.name = req.body.name
     student.email = req.body.email
+    student.registration = req.body.registration
     student.document = req.body.document
-    student.sr = req.body.sr
     student.semester = req.body.semester
     student.course_id = req.body.course_id
 

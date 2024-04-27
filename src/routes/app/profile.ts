@@ -6,6 +6,7 @@ interface Staff {
   id: number
   name: string
   email: string
+  registration: string
   document: string
 
   // Prevent typescript error, but this property doesn't exist to staff users
@@ -15,7 +16,6 @@ interface Staff {
 }
 
 interface Student extends Staff {
-  sr: string
   semester: number
   courses: {
     name: string
@@ -37,7 +37,7 @@ export async function profile(_: Request, res: Response) {
     if (is_staff) {
       const { data: staffData, error: staffError } = (await supabase
         .from("staff")
-        .select("id, name, email, document")
+        .select("id, name, email, registration, document")
         .eq("auth_user_id", auth_user_id)
         .limit(1)) as { data: Staff[] | null; error: any }
 
@@ -46,7 +46,9 @@ export async function profile(_: Request, res: Response) {
     } else {
       const { data: studentData, error: studentError } = (await supabase
         .from("students")
-        .select("id, name, email, sr, document, semester, courses(name)")
+        .select(
+          "id, name, email, registration, document, semester, courses(name)"
+        )
         .eq("auth_user_id", auth_user_id)
         .limit(1)) as { data: Student[] | null; error: any }
 
