@@ -2,6 +2,7 @@ import {
   IsNotEmpty,
   IsString,
   IsEmail,
+  Length,
   IsUUID,
   IsBoolean,
   IsOptional,
@@ -19,6 +20,7 @@ export class CreateStaffDto {
 
   @IsNotEmpty()
   @IsString()
+  @Length(13, 13)
   registration!: string
 
   @IsNotEmpty()

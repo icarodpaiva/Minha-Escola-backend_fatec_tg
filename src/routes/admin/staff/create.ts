@@ -1,4 +1,5 @@
 import { supabase } from "../../../databases/supabase"
+import { generateRandomNumber } from "../../../utils/generateRandomNumber"
 import { validateClass } from "../../../utils/validateClass"
 import { CreateStaffDto } from "./dto"
 
@@ -14,7 +15,7 @@ export async function create(req: Request, res: Response) {
 
     staff.name = req.body.name
     staff.email = req.body.email
-    staff.registration = req.body.registration
+    staff.registration = generateRandomNumber(13)
     staff.document = req.body.document
     staff.is_admin = req.body.is_admin
 
