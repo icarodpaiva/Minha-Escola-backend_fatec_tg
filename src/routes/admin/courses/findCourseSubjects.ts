@@ -15,7 +15,8 @@ export async function findCourseSubjects(req: Request, res: Response) {
     const { data, error } = (await supabase
       .from("courses_subjects")
       .select("id, semester, subjects(id, name)")
-      .eq("course_id", parseInt(id, 10))) as {
+      .eq("course_id", parseInt(id, 10))
+      .order("subjects(name)", { ascending: true })) as {
       data: CourseSubjectType[] | null
       error: any
     }
