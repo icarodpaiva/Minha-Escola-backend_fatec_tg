@@ -15,7 +15,9 @@ export async function findById(req: Request, res: Response) {
     const { data, error }: { data: ClassResponse[] | null; error: any } =
       await supabase
         .from("classes")
-        .select("*, locations(building, floor, classroom), groups(name)")
+        .select(
+          "*, locations(building, floor, classroom), groups(name, subjects(name))"
+        )
         .eq("id", id)
         .limit(1)
 
@@ -38,7 +40,8 @@ export async function findById(req: Request, res: Response) {
           floor: locations.floor,
           classroom: locations.classroom
         },
-        group_name: groups.name
+        group_name: groups.name,
+        subject_name: groups.subjects.name
       })
     )
 

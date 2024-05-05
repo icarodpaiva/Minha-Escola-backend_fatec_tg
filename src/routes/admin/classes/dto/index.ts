@@ -52,10 +52,11 @@ export interface ClassResponse {
   group_id: number
   location_id: number
   locations: Omit<Location, "id">
-  groups: { name: string }
+  groups: { name: string; subjects: { name: string } }
 }
 
 export interface Class extends Omit<ClassResponse, "locations" | "groups"> {
   location: Omit<Location, "id">
   group_name: string
+  subject_name: string
 }

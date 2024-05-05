@@ -19,7 +19,9 @@ export async function find(req: Request, res: Response) {
 
     const query = supabase
       .from("classes")
-      .select("*, locations(building, floor, classroom), groups(name)")
+      .select(
+        "*, locations(building, floor, classroom), groups(name, subjects(name))"
+      )
 
     if (filters.name) {
       query.ilike("name", `%${filters.name}%`)
@@ -50,7 +52,8 @@ export async function find(req: Request, res: Response) {
           floor: locations.floor,
           classroom: locations.classroom
         },
-        group_name: groups.name
+        group_name: groups.name,
+        subject_name: groups.subjects.name
       })
     )
 
