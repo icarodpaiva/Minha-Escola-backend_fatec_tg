@@ -13,10 +13,6 @@ export async function updateCourseSubjects(req: Request, res: Response) {
       return
     }
 
-    if (!req.body) {
-      return res.status(400).send("Missing body")
-    }
-
     const courseSubjects = new UpdateCourseSubjectsDto()
 
     courseSubjects.course_id = parseInt(id, 10)

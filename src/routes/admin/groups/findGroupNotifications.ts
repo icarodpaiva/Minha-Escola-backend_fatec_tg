@@ -27,8 +27,7 @@ export async function findGroupNotifications(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      res.status(404).send("Not found")
-      return
+      return res.status(200).send([])
     }
 
     const formattedCourseSubjects = data.map(({ id, notifications }) => {

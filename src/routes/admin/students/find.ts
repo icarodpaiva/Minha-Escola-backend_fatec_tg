@@ -42,7 +42,7 @@ export async function find(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      return res.status(404).send("Not found")
+      return res.status(200).send([])
     }
 
     const formattedData: Student[] = data?.map(({ courses, ...student }) => ({

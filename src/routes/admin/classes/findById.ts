@@ -12,11 +12,12 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: ClassResponse[] | null; error: any } = await supabase
-      .from("classes")
-      .select("*, locations(building, floor, classroom)")
-      .eq("id", id)
-      .limit(1)
+    const { data, error }: { data: ClassResponse[] | null; error: any } =
+      await supabase
+        .from("classes")
+        .select("*, locations(building, floor, classroom)")
+        .eq("id", id)
+        .limit(1)
 
     if (error) {
       console.log(error)

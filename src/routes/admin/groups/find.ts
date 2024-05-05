@@ -16,10 +16,11 @@ export async function find(req: Request, res: Response) {
       return res.status(400).send(errors)
     }
 
-    const { data, error }: { data: GroupResponse[] | null; error: any } = await supabase
-      .from("groups")
-      .select("*, subjects(name), staff(*)")
-      .ilike("name", `%${filters.name}%`)
+    const { data, error }: { data: GroupResponse[] | null; error: any } =
+      await supabase
+        .from("groups")
+        .select("*, subjects(name), staff(*)")
+        .ilike("name", `%${filters.name}%`)
 
     if (error) {
       console.log(error)
@@ -28,14 +29,16 @@ export async function find(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      return res.status(404).send("Not found")
+      return res.status(200).send([])
     }
 
-    const formattedData: Group[] = data.map(({subjects, staff,...group}) => ({
-      ...group,
-      subject_name: subjects.name,
-      teacher_name: staff?.name ?? null
-    }))
+    const formattedData: Group[] = data.map(
+      ({ subjects, staff, ...group }) => ({
+        ...group,
+        subject_name: subjects.name,
+        teacher_name: staff?.name ?? null
+      })
+    )
 
     res.status(200).send(formattedData)
   } catch (error) {

@@ -66,8 +66,7 @@ export async function notifications(_: Request, res: Response) {
     }
 
     if (!groups?.length) {
-      res.status(404).send("Not found")
-      return
+      return res.status(200).send([])
     }
 
     const groupsIds = groups.map(({ group_id }) => group_id)
@@ -102,8 +101,7 @@ export async function notifications(_: Request, res: Response) {
     }
 
     if (!notifications || notifications.length === 0) {
-      res.status(404).send("Not found")
-      return
+      return res.status(200).send([])
     }
 
     const uniqueNotifications: FormattedNotification[] = []

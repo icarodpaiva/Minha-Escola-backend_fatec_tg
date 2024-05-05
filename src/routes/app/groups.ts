@@ -46,8 +46,7 @@ export async function groups(_: Request, res: Response) {
     }
 
     if (!data?.length) {
-      res.status(404).send("Not found")
-      return
+      return res.status(200).send([])
     }
 
     const formattedGroups: FormattedGroup[] = data.map(({ groups }) => {

@@ -105,8 +105,7 @@ export async function classes(req: Request, res: Response) {
     }
 
     if (!groups?.length) {
-      res.status(404).send("Not found")
-      return
+      return res.status(200).send([])
     }
 
     const formattedClasses: FormattedClass[] = []

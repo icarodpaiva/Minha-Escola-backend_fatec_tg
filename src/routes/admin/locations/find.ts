@@ -30,6 +30,10 @@ export async function find(req: Request, res: Response) {
       return
     }
 
+    if (!data?.length) {
+      return res.status(200).send([])
+    }
+
     res.status(200).send(data)
   } catch (error) {
     console.log(error)
