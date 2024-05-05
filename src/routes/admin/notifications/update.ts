@@ -4,6 +4,11 @@ import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
 import { CreateAndUpdateNotificationDto } from "./dto"
 
+interface IsAdmin {
+  id: number
+  is_admin: boolean
+}
+
 import type { Request, Response } from "express"
 
 export async function update(req: Request, res: Response) {
@@ -19,11 +24,40 @@ export async function update(req: Request, res: Response) {
       return res.status(400).send("Missing body")
     }
 
+    const auth_user_id: string = res.locals.auth_user_id
+
+    const {
+      data: staff,
+      error: staffError
+    }: {
+      data: IsAdmin[] | null
+      error: any
+    } = await supabase
+      .from("staff")
+      .select("id,is_admin")
+      .eq("auth_user_id", auth_user_id)
+      .limit(1)
+
+    if (staffError) {
+      res.status(500).send("Internal server error")
+      return
+    }
+
+    if (!staff?.length) {
+      res.status(404).send("Not found")
+      return
+    }
+
+    if (!staff[0].is_admin) {
+      res.status(403).send("Forbidden")
+      return
+    }
+
     const notification = new CreateAndUpdateNotificationDto()
 
     notification.title = req.body.title
     notification.message = req.body.message
-    notification.staff_id = res.locals.admin_id
+    notification.staff_id = staff[0].id
 
     const errors = await validateClass(notification)
 

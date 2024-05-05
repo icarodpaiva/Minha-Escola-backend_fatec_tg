@@ -24,6 +24,7 @@ export async function isAuthenticated(
 
     res.locals.auth_user_id = authenticatedUser.user.id
     res.locals.is_staff = authenticatedUser.user.user_metadata.is_staff
+    res.locals.is_admin = authenticatedUser.user.user_metadata.is_admin
 
     next()
   } catch (error) {
