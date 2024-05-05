@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsString, IsEmail, IsInt, IsUUID } from "class-validator"
+import {
+  IsNotEmpty,
+  IsString,
+  IsEmail,
+  Length,
+  IsInt,
+  IsUUID
+} from "class-validator"
 
 export class CreateStudentDto {
   @IsNotEmpty()
@@ -11,6 +18,7 @@ export class CreateStudentDto {
 
   @IsNotEmpty()
   @IsString()
+  @Length(13, 13)
   registration!: string
 
   @IsNotEmpty()

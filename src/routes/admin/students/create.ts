@@ -1,4 +1,5 @@
 import { supabase } from "../../../databases/supabase"
+import { generateRandomNumber } from "../../../utils/generateRandomNumber"
 import { validateClass } from "../../../utils/validateClass"
 import { CreateStudentDto } from "./dto"
 
@@ -14,7 +15,7 @@ export async function create(req: Request, res: Response) {
 
     student.name = req.body.name
     student.email = req.body.email
-    student.registration = req.body.registration
+    student.registration = generateRandomNumber(13)
     student.document = req.body.document
     student.semester = req.body.semester
     student.course_id = req.body.course_id
