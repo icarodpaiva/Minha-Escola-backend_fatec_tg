@@ -22,7 +22,7 @@ export async function find(req: Request, res: Response) {
       .from("students")
       .select("*, courses(name)")
       .ilike("name", `%${filters.name}%`)
-      .order("id")
+      .order("name", { ascending: true })
 
     if (filters.semester) {
       query.eq("semester", filters.semester)

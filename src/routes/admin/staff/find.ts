@@ -21,6 +21,7 @@ export async function find(req: Request, res: Response) {
       .from("staff")
       .select("*")
       .ilike("name", `%${filters.name}%`)
+      .order("name", { ascending: true })
 
     if (filters.is_admin !== "all") {
       query.eq("is_admin", filters.is_admin)
