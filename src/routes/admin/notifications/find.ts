@@ -25,6 +25,7 @@ export async function find(req: Request, res: Response) {
         .from("notifications")
         .select("*, staff(name)")
         .ilike("title", `%${filters.title}%`)
+        .order("created_at", { ascending: false })
 
     if (error) {
       console.log(error)
