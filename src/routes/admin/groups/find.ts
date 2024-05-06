@@ -21,6 +21,7 @@ export async function find(req: Request, res: Response) {
         .from("groups")
         .select("*, subjects(name), staff(*)")
         .ilike("name", `%${filters.name}%`)
+        .order("subjects(name)", { ascending: true })
 
     if (error) {
       console.log(error)

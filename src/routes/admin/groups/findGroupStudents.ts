@@ -15,7 +15,8 @@ export async function findGroupStudents(req: Request, res: Response) {
     const { data, error } = (await supabase
       .from("students_groups")
       .select("id, students(id, name, email, semester, courses(name))")
-      .eq("group_id", id)) as {
+      .eq("group_id", id)
+      .order("students(name)", { ascending: true })) as {
       data: GroupStudentsType[] | null
       error: any
     }

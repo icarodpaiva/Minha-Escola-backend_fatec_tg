@@ -22,6 +22,7 @@ export async function find(req: Request, res: Response) {
       .select(
         "*, locations(building, floor, classroom), groups(name, subjects(name))"
       )
+      .order("groups(subjects)", { ascending: true })
 
     if (filters.name) {
       query.ilike("name", `%${filters.name}%`)

@@ -15,7 +15,8 @@ export async function findGroupNotifications(req: Request, res: Response) {
     const { data, error } = (await supabase
       .from("groups_notifications")
       .select("id, notifications(id, title, message, staff(id, name))")
-      .eq("group_id", parseInt(id, 10))) as {
+      .eq("group_id", parseInt(id, 10))
+      .order("created_at", { ascending: false })) as {
       data: GroupNotifications[] | null
       error: any
     }

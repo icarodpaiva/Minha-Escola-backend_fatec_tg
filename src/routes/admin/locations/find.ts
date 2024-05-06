@@ -23,6 +23,7 @@ export async function find(req: Request, res: Response) {
         .select("*")
         .ilike("building", `%${filters.building}%`)
         .ilike("classroom", `%${filters.classroom}%`)
+        .order("building", { ascending: true })
 
     if (error) {
       console.log(error)
