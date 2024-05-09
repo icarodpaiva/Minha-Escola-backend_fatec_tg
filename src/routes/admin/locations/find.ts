@@ -23,11 +23,16 @@ export async function find(req: Request, res: Response) {
         .select("*")
         .ilike("building", `%${filters.building}%`)
         .ilike("classroom", `%${filters.classroom}%`)
+        .order("building", { ascending: true })
 
     if (error) {
       console.log(error)
       res.status(500).send("Internal server error")
       return
+    }
+
+    if (!data?.length) {
+      return res.status(200).send([])
     }
 
     res.status(200).send(data)

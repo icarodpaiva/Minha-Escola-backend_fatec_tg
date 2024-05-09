@@ -1,6 +1,10 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { FindNotificationFiltersDto, NotificationResponse, Notification } from "./dto"
+import {
+  FindNotificationFiltersDto,
+  NotificationResponse,
+  Notification
+} from "./dto"
 
 import type { Request, Response } from "express"
 
@@ -21,6 +25,7 @@ export async function find(req: Request, res: Response) {
         .from("notifications")
         .select("*, staff(name)")
         .ilike("title", `%${filters.title}%`)
+        .order("created_at", { ascending: false })
 
     if (error) {
       console.log(error)
@@ -29,13 +34,15 @@ export async function find(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      return res.status(404).send("Not found")
+      return res.status(200).send([])
     }
 
-    const formattedData: Notification[] = data.map(({staff, ...notification}) => ({
-      ...notification,
-      staff_name: staff.name
-    }))
+    const formattedData: Notification[] = data.map(
+      ({ staff, ...notification }) => ({
+        ...notification,
+        staff_name: staff.name
+      })
+    )
 
     res.status(200).send(formattedData)
   } catch (error) {

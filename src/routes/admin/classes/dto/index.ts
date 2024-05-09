@@ -3,7 +3,7 @@ import {
   IsString,
   IsDateString,
   Validate,
-  IsInt,
+  IsInt
 } from "class-validator"
 import { IsTime } from "../../../../decorators/IsTime"
 
@@ -51,9 +51,12 @@ export interface ClassResponse {
   end_time: string
   group_id: number
   location_id: number
-  locations: Omit<Location, 'id'>
+  locations: Omit<Location, "id">
+  groups: { name: string; subjects: { name: string } }
 }
 
-export interface Class extends Omit<ClassResponse, 'locations'> {
-  location: Omit<Location, 'id'>
+export interface Class extends Omit<ClassResponse, "locations" | "groups"> {
+  location: Omit<Location, "id">
+  group_name: string
+  subject_name: string
 }

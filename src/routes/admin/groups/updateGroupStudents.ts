@@ -1,10 +1,10 @@
 import { supabase } from "../../../databases/supabase"
 import { validateClass } from "../../../utils/validateClass"
-import { UpdateCourseSubjectsDto } from "./dto"
+import { UpdateGroupStudentsDto } from "./dto"
 
 import type { Request, Response } from "express"
 
-export async function updateCourseSubjects(req: Request, res: Response) {
+export async function updateGroupStudents(req: Request, res: Response) {
   try {
     const { id } = req.params
 
@@ -13,12 +13,12 @@ export async function updateCourseSubjects(req: Request, res: Response) {
       return
     }
 
-    const courseSubjects = new UpdateCourseSubjectsDto()
+    const groupStudents = new UpdateGroupStudentsDto()
 
-    courseSubjects.course_id = parseInt(id, 10)
-    courseSubjects.subjects = req.body.subjects
+    groupStudents.group_id = parseInt(id, 10)
+    groupStudents.students = req.body.students
 
-    const errors = await validateClass(courseSubjects)
+    const errors = await validateClass(groupStudents)
 
     if (errors) {
       res.status(400).send(errors)
@@ -26,9 +26,9 @@ export async function updateCourseSubjects(req: Request, res: Response) {
     }
 
     const { error: deleteError } = await supabase
-      .from("courses_subjects")
+      .from("students_groups")
       .delete()
-      .eq("course_id", courseSubjects.course_id)
+      .eq("group_id", groupStudents.group_id)
 
     if (deleteError) {
       console.log(deleteError)
@@ -36,13 +36,13 @@ export async function updateCourseSubjects(req: Request, res: Response) {
       return
     }
 
-    const inserts = courseSubjects.subjects.map(subject => ({
-      course_id: courseSubjects.course_id,
-      ...subject
+    const inserts = groupStudents.students.map(student_id => ({
+      group_id: groupStudents.group_id,
+      student_id
     }))
 
     const { error: insertError } = await supabase
-      .from("courses_subjects")
+      .from("students_groups")
       .insert(inserts)
 
     if (insertError) {

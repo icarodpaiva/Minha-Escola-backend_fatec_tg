@@ -8,6 +8,7 @@ import { deleteGroup } from "./delete"
 
 import { findGroupNotifications } from "./findGroupNotifications"
 import { findGroupStudents } from "./findGroupStudents"
+import { updateGroupStudents } from "./updateGroupStudents"
 
 export const groups = Router()
 
@@ -19,3 +20,4 @@ groups.delete("/:id", deleteGroup)
 
 groups.get("/:id/notifications", findGroupNotifications)
 groups.get("/:id/students", findGroupStudents)
+groups.put("/:id/students", updateGroupStudents)

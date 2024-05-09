@@ -32,7 +32,8 @@ export async function create(req: Request, res: Response) {
         password: staff.document,
         email_confirm: true,
         user_metadata: {
-          is_staff: true
+          is_staff: true,
+          is_admin: staff.is_admin
         }
       })
 

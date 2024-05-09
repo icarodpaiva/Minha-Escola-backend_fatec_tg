@@ -22,7 +22,7 @@ export async function find(req: Request, res: Response) {
       .from("students")
       .select("*, courses(name)")
       .ilike("name", `%${filters.name}%`)
-      .order("id")
+      .order("name", { ascending: true })
 
     if (filters.semester) {
       query.eq("semester", filters.semester)
@@ -42,7 +42,7 @@ export async function find(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      return res.status(404).send("Not found")
+      return res.status(200).send([])
     }
 
     const formattedData: Student[] = data?.map(({ courses, ...student }) => ({

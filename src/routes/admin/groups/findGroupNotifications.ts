@@ -15,7 +15,8 @@ export async function findGroupNotifications(req: Request, res: Response) {
     const { data, error } = (await supabase
       .from("groups_notifications")
       .select("id, notifications(id, title, message, staff(id, name))")
-      .eq("group_id", parseInt(id, 10))) as {
+      .eq("group_id", parseInt(id, 10))
+      .order("created_at", { ascending: false })) as {
       data: GroupNotifications[] | null
       error: any
     }
@@ -27,8 +28,7 @@ export async function findGroupNotifications(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      res.status(404).send("Not found")
-      return
+      return res.status(200).send([])
     }
 
     const formattedCourseSubjects = data.map(({ id, notifications }) => {

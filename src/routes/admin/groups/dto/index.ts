@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsInt, IsIn, IsOptional } from "class-validator"
+import {
+  IsString,
+  IsNotEmpty,
+  IsInt,
+  IsIn,
+  IsOptional,
+  IsArray
+} from "class-validator"
 
 const SEMESTER_VALUES = ["1", "2", "1-2"] as const
 
@@ -68,4 +75,13 @@ export interface GroupStudentsType {
     semester: number
     courses: { name: string }
   }
+}
+
+export class UpdateGroupStudentsDto {
+  @IsInt()
+  group_id!: number
+
+  @IsInt({ each: true })
+  @IsArray()
+  students!: number[]
 }

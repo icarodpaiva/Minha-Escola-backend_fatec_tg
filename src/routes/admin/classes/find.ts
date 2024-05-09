@@ -19,7 +19,10 @@ export async function find(req: Request, res: Response) {
 
     const query = supabase
       .from("classes")
-      .select("*, locations(building, floor, classroom)")
+      .select(
+        "*, locations(building, floor, classroom), groups(name, subjects(name))"
+      )
+      .order("groups(subjects)", { ascending: true })
 
     if (filters.name) {
       query.ilike("name", `%${filters.name}%`)
@@ -39,17 +42,21 @@ export async function find(req: Request, res: Response) {
     }
 
     if (!data?.length) {
-      return res.status(404).send("Not found")
+      return res.status(200).send([])
     }
 
-    const formattedData: Class[] = data.map(({ locations, ...groupClass }) => ({
-      ...groupClass,
-      location: {
-        building: locations.building,
-        floor: locations.floor,
-        classroom: locations.classroom
-      }
-    }))
+    const formattedData: Class[] = data.map(
+      ({ locations, groups, ...groupClass }) => ({
+        ...groupClass,
+        location: {
+          building: locations.building,
+          floor: locations.floor,
+          classroom: locations.classroom
+        },
+        group_name: groups.name,
+        subject_name: groups.subjects.name
+      })
+    )
 
     res.status(200).send(formattedData)
   } catch (error) {

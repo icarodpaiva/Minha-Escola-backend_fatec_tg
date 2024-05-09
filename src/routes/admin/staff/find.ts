@@ -21,6 +21,7 @@ export async function find(req: Request, res: Response) {
       .from("staff")
       .select("*")
       .ilike("name", `%${filters.name}%`)
+      .order("name", { ascending: true })
 
     if (filters.is_admin !== "all") {
       query.eq("is_admin", filters.is_admin)
@@ -32,6 +33,10 @@ export async function find(req: Request, res: Response) {
       console.log(error)
       res.status(500).send("Internal server error")
       return
+    }
+
+    if (!data?.length) {
+      return res.status(200).send([])
     }
 
     res.status(200).send(data)

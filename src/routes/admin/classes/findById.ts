@@ -12,11 +12,14 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    const { data, error }: { data: ClassResponse[] | null; error: any } = await supabase
-      .from("classes")
-      .select("*, locations(building, floor, classroom)")
-      .eq("id", id)
-      .limit(1)
+    const { data, error }: { data: ClassResponse[] | null; error: any } =
+      await supabase
+        .from("classes")
+        .select(
+          "*, locations(building, floor, classroom), groups(name, subjects(name))"
+        )
+        .eq("id", id)
+        .limit(1)
 
     if (error) {
       console.log(error)
@@ -29,14 +32,18 @@ export async function findById(req: Request, res: Response) {
       return
     }
 
-    const formattedData: Class[] = data.map(({ locations, ...groupClass }) => ({
-      ...groupClass,
-      location: {
-        building: locations.building,
-        floor: locations.floor,
-        classroom: locations.classroom
-      }
-    }))
+    const formattedData: Class[] = data.map(
+      ({ locations, groups, ...groupClass }) => ({
+        ...groupClass,
+        location: {
+          building: locations.building,
+          floor: locations.floor,
+          classroom: locations.classroom
+        },
+        group_name: groups.name,
+        subject_name: groups.subjects.name
+      })
+    )
 
     res.status(200).send(formattedData[0])
   } catch (error) {

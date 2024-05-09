@@ -33,7 +33,8 @@ export async function create(req: Request, res: Response) {
         password: student.document,
         email_confirm: true,
         user_metadata: {
-          is_staff: false
+          is_staff: false,
+          is_admin: false
         }
       })
 
