@@ -1,4 +1,5 @@
 import { supabase } from "../../databases/supabase"
+import { NOTIFICATION_TOPICS_CHANNELS } from "../../constants/admin"
 
 import type { Request, Response } from "express"
 
@@ -86,7 +87,10 @@ export async function notifications(_: Request, res: Response) {
           staff(name)
         )`
       )
-      .in("groups.id", groupsIds)
+      .in(
+        "groups.id",
+        is_staff ? groupsIds : [...groupsIds, ...NOTIFICATION_TOPICS_CHANNELS]
+      )
       .not("groups", "is", null)
       .not("notifications", "is", null)
       .order("created_at", { ascending: false })) as {
